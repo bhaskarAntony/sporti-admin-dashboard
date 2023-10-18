@@ -1,24 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import EventsUpload from './components/EventsUpload';
+import SidebarMenu from 'react-bootstrap-sidebar-menu';
+import SideNav from './components/SideNav';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import TrainingMode from './components/TrainingMode';
+import Companies from './components/Companies';
+import YoutubeVideos from './components/YoutubeVideo';
+import Advantages from './components/Advantages';
+import Testimonials from './components/Testimonials';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <SideNav/>
+    <BrowserRouter>
+    <Routes>
+      <Route path='/hero' element={<EventsUpload/>}/>
+      <Route path='/training-mode' element={<TrainingMode/>}/>
+      <Route path='/companies' element={<Companies/>}/>
+      <Route path='/youtube-videos' element={<YoutubeVideos/>}/>
+      <Route path='/advantages' element={<Advantages/>}/>
+      <Route path='/testimonials' element={<Testimonials/>}/>
+    </Routes>
+    </BrowserRouter>
+    </>
+  
   );
 }
 
