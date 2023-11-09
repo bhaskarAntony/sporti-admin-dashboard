@@ -8,6 +8,7 @@ import Companies from './components/Companies';
 import YoutubeVideos from './components/YoutubeVideo';
 import Advantages from './components/Advantages';
 import Testimonials from './components/Testimonials';
+import BlogPost from './components/BlogsPost';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <Route path='/youtube-videos' element={<YoutubeVideos/>}/>
       <Route path='/advantages' element={<Advantages/>}/>
       <Route path='/testimonials' element={<Testimonials/>}/>
+      <Route path='/blogs' element={<BlogPost/>}/>
     </Routes>
     </BrowserRouter>
     </>

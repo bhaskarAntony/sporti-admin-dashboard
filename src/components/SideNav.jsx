@@ -45,7 +45,7 @@ function SideNav() {
             <hr />
             <a href="/youtube-videos" className='nav-link'>Youtube Videos</a>
             <hr />
-            <a href="/" className='nav-link'>Quiz</a>
+            <a href="/blogs" className='nav-link'>Post Blogs</a>
             <hr />
             <a href="/" className='nav-link'></a>
             <hr />

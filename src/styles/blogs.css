@@ -1,0 +1,9 @@
+.editor{
+    min-height: 300px !important;
+    border: none !important;
+    tab-size:10 !important;
+    background-color: #fff;
+}
+.ql-editor{
+    min-height: 300px !important;
+}
