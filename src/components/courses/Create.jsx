@@ -82,9 +82,9 @@ const UploadData = () => {
   const handleUpload = async () => {
     try {
       const response = await createCourse(courseData);
-      console.log('Course uploaded successfully:', response);
+      alert('Course uploaded successfully:', response);
     } catch (error) {
-      console.error('Error uploading course:', error.message);
+      alert('Error uploading course:', error.message);
     }
     console.log(courseData)
   };

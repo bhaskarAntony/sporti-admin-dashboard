@@ -9,6 +9,6 @@ async function fetchData(endpoint) {
     throw error;
   }
 }
-const images = fetchData('http://localhost:3300/aws/images')
+const images = fetchData('https://backend-bp-bpdeveloperscommunity.onrender.com/aws/images')
 
 export { images };
