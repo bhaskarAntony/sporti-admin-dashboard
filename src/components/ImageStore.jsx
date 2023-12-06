@@ -21,7 +21,7 @@ function ImageStore() {
     formDataUpload.append('image', formData.image);
 
     // Send a POST request to create a new image using FormData
-    axios.post('http://localhost:3300/aws/upload', formDataUpload)
+    axios.post('https://backend-bp-bpdeveloperscommunity.onrender.com/aws/upload', formDataUpload)
   .then((response) => {
     console.log('Response:', response);
     alert('Image uploaded successfully');

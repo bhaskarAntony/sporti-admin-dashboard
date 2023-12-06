@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { images } from '../../Data/DataFetcher';
+import copy from 'clipboard-copy';
 
 function AllImages() {
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,20 @@ function AllImages() {
 
   const getFileExtension = (filename) => {
     return filename.split('.').pop().toLowerCase();
+  };
+  const [isCopy, setIsCopy] = useState(false)
+  const handleCopyClick = (text) => {
+    return () => {
+      copy(text)
+        .then(() => {
+          setIsCopy(true)
+          // toast.success(text, "copied")
+        })
+        .catch((error) => {
+          // console.error('Copy failed: ', error);
+          setIsCopy(false)
+        });
+    };
   };
 
   return (
@@ -38,7 +53,7 @@ function AllImages() {
                   </div>
                 </div>
               )}
-              <small className='bg-primary rounded-1 text-white p-1 text-center'>Copy</small>
+              <small className='bg-primary rounded-1 text-white p-1 text-center' onClick={handleCopyClick(`https://bepractical.s3.us-east-2.amazonaws.com/${item.image}`)}>{isCopy? 'Copied':'Copy'}</small>
             </div>
           </div>
         ))}
