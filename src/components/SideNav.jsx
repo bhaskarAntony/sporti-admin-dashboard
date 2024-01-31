@@ -65,6 +65,9 @@ function SideNav() {
             <li className="sidenav-item">
             <a href="/blogs"><i class="bi bi-postcard-heart-fill mx-2"></i> Blogs</a>
             </li>
+            <li className="sidenav-item">
+            <a href="/job"><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</a>
+            </li>
           </ul>
 
         </Offcanvas.Body>

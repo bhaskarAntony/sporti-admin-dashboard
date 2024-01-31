@@ -11,6 +11,7 @@ import Testimonials from './components/Testimonials';
 import BlogPost from './components/BlogsPost';
 import ImageStore from './components/ImageStore';
 import Course from './components/courses/Course';
+import Job from './components/Job';
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <li className='sidenav-item'><Link to='/courses'><i class="bi bi-boxes mx-2"></i>Events</Link></li>
         <li className='sidenav-item'><Link to='/courses'><i class="bi bi-youtube mx-2"></i>Youtube Videos</Link></li>
         <li className='sidenav-item'><Link to='/courses'><i class="bi bi-postcard-heart-fill mx-2"></i>Blogs</Link></li>
+        <li className='sidenav-item'><Link to='/job'><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</Link></li>
       </ul>
     </div>
     </div>
@@ -53,6 +55,7 @@ function App() {
       <Route path='/blogs' element={<BlogPost/>}/>
       <Route path='/imageStore' element={<ImageStore/>}/>
       <Route path='/course' element={<Course/>}/>
+      <Route path='/job' element={<Job/>}/>
     </Routes>
     </div>
    </div>

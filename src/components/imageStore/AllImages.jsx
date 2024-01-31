@@ -39,7 +39,7 @@ function AllImages() {
         {allImages.map((item, index) => (
           <div className='col-4 col-md-2 col-lg-2' key={index}>
             <div className='card p-2 mb-2'>
-              {['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(getFileExtension(item.image.toLowerCase())) ? (
+              {['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'].includes(getFileExtension(item.image.toLowerCase())) ? (
                 // Render image style
                 <img src={`https://bepractical.s3.us-east-2.amazonaws.com/${item.image}`} alt='' className='w-100' />
               ) : (
@@ -53,7 +53,9 @@ function AllImages() {
                   </div>
                 </div>
               )}
+              
               <small className='bg-primary rounded-1 text-white p-1 text-center' onClick={handleCopyClick(`https://bepractical.s3.us-east-2.amazonaws.com/${item.image}`)}>{isCopy? 'Copied':'Copy'}</small>
+
             </div>
           </div>
         ))}
