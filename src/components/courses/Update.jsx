@@ -41,7 +41,7 @@ const Update = () => {
   useEffect(() => {
     const fetchAllCourses = async () => {
       try {
-        const response = await axios.get(`http://localhost:3300/api/allcourses/${id}`);
+        const response = await axios.get(`https://be-practical-admin-pannel.vercel.app//api/allcourses/${id}`);
         setLoading(false)
         console.log(response.data);
         setCourseData({
