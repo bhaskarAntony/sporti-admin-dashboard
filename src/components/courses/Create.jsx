@@ -6,27 +6,38 @@ import { createCourse } from '../../Data/apiService';
 
 const UploadData = () => {
   const [courseData, setCourseData] = useState({
+    tag:'',
     courseName: '',
-    courseDuration: '',
-    enrolledStudents: 0,
-    modeOfTraining: '',
-    courseVideo: '',
-    minSalary: '',
-    HighestSalary: '',
-    BatchStarting: '',
-    heroTitle: '',
-    heroSubtitle: '',
-    faqs: [],
-    modules: [],
-    programmingLanguages: [],
-    instructors:[],
     courseImage:'',
-    courseDescription:'',
+    heroSubtitle: '',
+    coursePoints:'',
+    BrocherLink: '',
+    courseDescription: '',
     certification:'',
     courseFor:'',
-    designation:'',
-    salaryDescription:'',
-    courseHeroPoints:''
+    subCourses:[],
+    Benifits:'',
+    Designation:'',
+    AnnualSalary:'',
+    faqs: [],
+    languages: [],
+    seo:{
+      title:'',
+      description:'',
+      keywords:'',
+      Tag_H1:'',
+      canonical_url:''
+    },
+    details:{
+      Instructor:'',
+      Duration:'',
+      admisionStart:''
+    },
+ 
+
+
+
+   
   });
 
   const handleCertificationChange = (certification) => {
@@ -38,8 +49,8 @@ const UploadData = () => {
   const handleDesignationChange = (designation) => {
     setCourseData({ ...courseData, designation });
   };
-  const handleSalaryDescriptionChange = (salaryDescription) => {
-    setCourseData({ ...courseData, salaryDescription });
+  const handleSalaryDescriptionChange = (AnnualSalary) => {
+    setCourseData({ ...courseData, AnnualSalary });
   };
   const handleCourseHeroPointsChange = (courseHeroPoints) => {
     setCourseData({ ...courseData, courseHeroPoints });
@@ -62,31 +73,32 @@ const UploadData = () => {
     }));
   };
 
-  const handleAddModule = () => {
-    setCourseData((prevData) => ({
-      ...prevData,
-      modules: [...prevData.modules, { title: '', topics: '' }],
-    }));
-  };
+  // const handleAddModule = () => {
+  //   setCourseData((prevData) => ({
+  //     ...prevData,
+  //     modules: [...prevData.modules, { title: '', topics: '' }],
+  //   }));
+  // };
 
   const handleAddProgrammingLanguage = () => {
     setCourseData((prevData) => ({
       ...prevData,
-      programmingLanguages: [
-        ...prevData.programmingLanguages,
+      languages: [
+        ...prevData.languages,
         { name: '', image: '' },
       ],
     }));
   };
 
   const handleUpload = async () => {
-    try {
-      const response = await createCourse(courseData);
-      alert('Course uploaded successfully:', response);
-    } catch (error) {
-      alert('Error uploading course:', error.message);
-    }
     console.log(courseData)
+    // try {
+    //   const response = await createCourse(courseData);
+    //   alert('Course uploaded successfully:', response);
+    // } catch (error) {
+    //   alert('Error uploading course:', error.message);
+    // }
+    // console.log(courseData)
   };
 
   return (
@@ -115,11 +127,11 @@ const UploadData = () => {
       </label> */}
         <input
           type="text"
-          placeholder='Course Duration'
+          placeholder='BrocherLink'
           className='form-control'
-          value={courseData.courseDuration}
+          value={courseData.BrocherLink}
           onChange={(e) =>
-            setCourseData({ ...courseData, courseDuration: e.target.value })
+            setCourseData({ ...courseData, BrocherLink: e.target.value })
           }
         />
       
@@ -271,7 +283,6 @@ const UploadData = () => {
           }
         /> */}
          <ReactQuill  value={courseData.courseDescription} onChange={handleCourseDescriptionChange} className='form-control p-0 border-0' />
-      
         </div>
         <div className="col-12 col-sm-12 col-md-6 col-lg-6">
         <label className='form-label'>
@@ -312,7 +323,7 @@ const UploadData = () => {
             setCourseData({ ...courseData, designation: e.target.value })
           }
         /> */}
-        <ReactQuill  value={courseData.designation} onChange={handleDesignationChange} className='form-control p-0 border-0' />
+        <ReactQuill  value={courseData.Designation} onChange={handleDesignationChange} className='form-control p-0 border-0' />
       
         </div>
         <div className="col-12 col-sm-12 col-md-6 col-lg-6">
@@ -326,7 +337,7 @@ const UploadData = () => {
             setCourseData({ ...courseData, salaryDescription: e.target.value })
           }
         /> */}
-        <ReactQuill  value={courseData.salaryDescription} onChange={handleSalaryDescriptionChange} className='form-control p-0 border-0' />
+        <ReactQuill  value={courseData.AnnualSalary} onChange={handleSalaryDescriptionChange} className='form-control p-0 border-0' />
      
         </div>
         <div className="col-12 col-sm-12 col-md-6 col-lg-6">
@@ -398,7 +409,7 @@ const UploadData = () => {
       <button  className='main-btn' onClick={handleAddFAQ}>Add FAQ</button>
 
      </div>
-    <div className="module bg-white p-3 mb-4 border">
+    {/* <div className="module bg-white p-3 mb-4 border">
     <h2 className='fs-3 mb-4'>Modules</h2>
       {courseData.modules.map((module, index) => (
   <div key={index}>
@@ -433,11 +444,11 @@ const UploadData = () => {
 ))}
 
       <button  onClick={handleAddModule} className='main-btn'><i class="bi bi-plus-lg mx-2"></i>Add Module</button>
-    </div>
+    </div> */}
 
 <div className="languages bg-white p-3 mb-4 border">
 <h2 className='fs-3 mb-4'>Programming Languages</h2>
-      {courseData.programmingLanguages.map((language, index) => (
+      {courseData.languages.map((language, index) => (
   <div key={index}>
     <div className="row">
         <div className="col-sm-12 col-md-6">

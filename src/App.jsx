@@ -12,6 +12,11 @@ import BlogPost from './components/BlogsPost';
 import ImageStore from './components/ImageStore';
 import Course from './components/courses/Course';
 import Job from './components/Job';
+import CreateCourses from './components/courses/CreateCourses';
+import Update from './components/courses/Update';
+import SubCourseUpdate from './components/courses/SubCourseUpdate';
+import AllSubCourses from './components/courses/AllSubCourses';
+import UpdateSubCourse from './components/courses/UpdateSubCourse';
 
 
 function App() {
@@ -30,15 +35,15 @@ function App() {
         <li className="sidenav-item">
             <a href="/course"><i class="bi bi-mortarboard-fill mx-2"></i>Courses</a>
             </li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-back mx-2"></i>Traning Card</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-bar-chart-steps mx-2"></i>Adwantages</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-building mx-2"></i>Companies</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-stars mx-2"></i>Elite Program</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-quote mx-2"></i>Testimonials</Link></li>
+        <li className='sidenav-item'><Link to='/training-mode'><i class="bi bi-back mx-2"></i>Traning Card</Link></li>
+        <li className='sidenav-item'><Link to='/advantages'><i class="bi bi-bar-chart-steps mx-2"></i>Adwantages</Link></li>
+        <li className='sidenav-item'><Link to='/companies'><i class="bi bi-building mx-2"></i>Companies</Link></li>
+        <li className='sidenav-item'><Link to='/'><i class="bi bi-stars mx-2"></i>Elite Program</Link></li>
+        <li className='sidenav-item'><Link to='/testimonials'><i class="bi bi-quote mx-2"></i>Testimonials</Link></li>
         <li className='sidenav-item'><Link to='/courses'><i class="bi bi-calendar2-range mx-2"></i>Webinar</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-boxes mx-2"></i>Events</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-youtube mx-2"></i>Youtube Videos</Link></li>
-        <li className='sidenav-item'><Link to='/courses'><i class="bi bi-postcard-heart-fill mx-2"></i>Blogs</Link></li>
+        <li className='sidenav-item'><Link to='/events'><i class="bi bi-boxes mx-2"></i>Events</Link></li>
+        <li className='sidenav-item'><Link to='/youtube-videos'><i class="bi bi-youtube mx-2"></i>Youtube Videos</Link></li>
+        <li className='sidenav-item'><Link to='/blogs'><i class="bi bi-postcard-heart-fill mx-2"></i>Blogs</Link></li>
         <li className='sidenav-item'><Link to='/job'><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</Link></li>
       </ul>
     </div>
@@ -55,6 +60,9 @@ function App() {
       <Route path='/blogs' element={<BlogPost/>}/>
       <Route path='/imageStore' element={<ImageStore/>}/>
       <Route path='/course' element={<Course/>}/>
+      <Route path='/update/course/:id' element={<Update/>}/>
+      <Route path='/update/:id/subcourse/:subCourseId' element={<UpdateSubCourse/>}/>
+      <Route path='/subcourses/:id' element={<AllSubCourses/>}/>
       <Route path='/job' element={<Job/>}/>
     </Routes>
     </div>

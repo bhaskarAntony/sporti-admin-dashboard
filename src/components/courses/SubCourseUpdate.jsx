@@ -6,42 +6,42 @@ import Loading from '../Loading';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-const Update = () => {
+const SubCourseUpdate = () => {
     const {id} = useParams()
     const [loading, setLoading] = useState(false)
-  const [courseData, setCourseData] = useState({
-    tag:'',
-    courseName: '',
-    courseImage:'',
-    heroSubtitle: '',
-    coursePoints:'',
-    BrocherLink: '',
-    courseDescription: '',
-    certification:'',
-    courseFor:'',
-    subCourses:[],
-    Benifits:'',
-    Designation:'',
-    AnnualSalary:'',
-    faqs: [],
-    programmingLanguages: [],
-    seo:{
-      title:'',
-      description:'',
-      keywords:'',
-      Tag_H1:'',
-      canonical_url:''
-    },
-    details:{
-      Instructor:'',
-      Duration:'',
-      admisionStart:''
-    },
-  });
+    const [courseData, setCourseData] = useState({
+        tag:'',
+        courseName: '',
+        courseImage:'',
+        heroSubtitle: '',
+        coursePoints:'',
+        BrocherLink: '',
+        courseDescription: '',
+        certification:'',
+        courseFor:'',
+        modules:[],
+        Benifits:'',
+        Designation:'',
+        AnnualSalary:'',
+        faqs: [],
+        programmingLanguages: [],
+        seo:{
+          title:'',
+          description:'',
+          keywords:'',
+          Tag_H1:'',
+          canonical_url:''
+        },
+        details:{
+          Instructor:'',
+          Duration:'',
+          admisionStart:''
+        },
+      });
   useEffect(() => {
     const fetchAllCourses = async () => {
       try {
-        const response = await axios.get(`http://localhost:3300/api/allcourses/${id}`);
+        const response = await axios.get(`https://comfortable-boot-fly.cyclic.app/api/allcourses/${id}`);
         setLoading(false)
         console.log(response.data);
         setCourseData({
@@ -429,4 +429,4 @@ const Update = () => {
   );
 };
 
-export default Update;
+export default SubCourseUpdate;

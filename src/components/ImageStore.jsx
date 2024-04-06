@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import AllImages from './imageStore/AllImages';
+import Loading from './Loading';
 
 function ImageStore() {
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     image: null, // Use null instead of an empty string for the file input
   });
@@ -16,24 +18,31 @@ function ImageStore() {
   };
 
   const handleEventUpload = () => {
+    setLoading(true)
     // Use FormData to handle file uploads
     const formDataUpload = new FormData();
     formDataUpload.append('image', formData.image);
 
     // Send a POST request to create a new image using FormData
-    axios.post('https://backend-bp-bpdeveloperscommunity.onrender.com/aws/upload', formDataUpload)
+    axios.post('https://comfortable-boot-fly.cyclic.app/aws/upload', formDataUpload)
   .then((response) => {
     console.log('Response:', response);
     alert('Image uploaded successfully');
+    setLoading(false)
     setFormData({
       image: null,
     });
   })
   .catch((error) => {
+    setLoading(false)
     console.error('Error:', error);
     alert('Error uploading image');
   });
 }
+if(loading){
+  return <Loading/>
+}
+
 
 
   return (

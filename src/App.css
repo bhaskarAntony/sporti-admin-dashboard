@@ -1,6 +1,6 @@
 
 :root{
-    --primary: #fc6838;
+    --primary: #4b9cff;
     --secondary: #fc6838;
     --light-color:#f9fafd;
 }
@@ -24,7 +24,8 @@
     border: 1px solid var(--primary) !important;
 }
 .form-label{
-    color:  var(--primary);
+    color: #424242;
+    font-weight: bold;
 }
 .btn-close{
     --bs-btn-close-bg:url(https://cdn-icons-png.flaticon.com/128/8791/8791943.png?ga=GA1.1.874872603.1694171926&track=ais) !important;
@@ -96,4 +97,15 @@
   
   ::-moz-scrollbar-thumb:hover {
     background-color: #555; /* color of the thumb on hover */
+  }
+  .loading{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background-color: #00000064;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }

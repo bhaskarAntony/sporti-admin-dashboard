@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { createCourse, updateCourse } from '../../Data/apiService';
+import { createCourse } from '../../Data/apiService';
 import Loading from '../Loading';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
 
-const Update = () => {
-    const {id} = useParams()
+const UploadDatas = () => {
     const [loading, setLoading] = useState(false)
   const [courseData, setCourseData] = useState({
     tag:'',
@@ -38,26 +35,6 @@ const Update = () => {
       admisionStart:''
     },
   });
-  useEffect(() => {
-    const fetchAllCourses = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3300/api/allcourses/${id}`);
-        setLoading(false)
-        console.log(response.data);
-        setCourseData({
-            ...response.data, // Spread the response data
-            subCourses: [], // Initialize subCourses array, as it's not available in the response
-          });
-
-      } catch (error) {
-        setLoading(false)
-        console.error('Error fetching courses:', error);
-      }
-    };
-
-    fetchAllCourses();
-    console.log(courseData)
-  }, []);
 
   const handleChange = (key, value) => {
     if (key.includes('.')) {
@@ -92,12 +69,12 @@ const Update = () => {
     console.log(courseData);
     setLoading(true)
     try {
-      const response = await updateCourse(courseData, id);
+      const response = await createCourse(courseData);
       setLoading(false)
-      alert('Course updated successfully:', response);
+      alert('Course uploaded successfully:', response);
     } catch (error) {
         setLoading(false)
-      alert('Error on updating course:', error.message);
+      alert('Error uploading course:', error.message);
     }
     console.log(courseData)
   };
@@ -120,7 +97,7 @@ const Update = () => {
                     type="text"
                     placeholder='Course  Tag'
                     className='form-control'
-                    value={courseData?.seo?.title}
+                    value={courseData.seo.title}
                     onChange={(e) => handleChange('seo.title', e.target.value)}
                     />
                     </div>
@@ -429,4 +406,4 @@ const Update = () => {
   );
 };
 
-export default Update;
+export default UploadDatas;

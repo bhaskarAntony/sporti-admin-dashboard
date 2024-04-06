@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { createCourse, updateCourse } from '../../Data/apiService';
-import Loading from '../Loading';
+import { createCourse } from '../../Data/apiService';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import Loading from '../Loading';
 
-const Update = () => {
-    const {id} = useParams()
-    const [loading, setLoading] = useState(false)
+const Subcourses = () => {
+    const [allCourses, setAllCourses] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [courseId, setCourseId] = useState('')
   const [courseData, setCourseData] = useState({
     tag:'',
     courseName: '',
@@ -19,7 +19,7 @@ const Update = () => {
     courseDescription: '',
     certification:'',
     courseFor:'',
-    subCourses:[],
+    modules:[],
     Benifits:'',
     Designation:'',
     AnnualSalary:'',
@@ -41,14 +41,10 @@ const Update = () => {
   useEffect(() => {
     const fetchAllCourses = async () => {
       try {
-        const response = await axios.get(`http://localhost:3300/api/allcourses/${id}`);
+        const response = await axios.get('https://comfortable-boot-fly.cyclic.app/api/allcourses');
         setLoading(false)
-        console.log(response.data);
-        setCourseData({
-            ...response.data, // Spread the response data
-            subCourses: [], // Initialize subCourses array, as it's not available in the response
-          });
-
+        console.log(response.data.courses);
+        setAllCourses(response.data.courses)
       } catch (error) {
         setLoading(false)
         console.error('Error fetching courses:', error);
@@ -56,7 +52,6 @@ const Update = () => {
     };
 
     fetchAllCourses();
-    console.log(courseData)
   }, []);
 
   const handleChange = (key, value) => {
@@ -80,6 +75,12 @@ const Update = () => {
       faqs: [...prevData.faqs, { question: '', answer: '' }],
     }));
   };
+  const handleAddModule = () => {
+    setCourseData((prevData) => ({
+      ...prevData,
+      modules: [...prevData.modules, { title: '', description: '' }],
+    }));
+  };
 
   const handleAddLanguage = () => {
     setCourseData((prevData) => ({
@@ -89,38 +90,56 @@ const Update = () => {
   };
 
   const handleUpload = async () => {
-    console.log(courseData);
     setLoading(true)
+    console.log(courseData);
     try {
-      const response = await updateCourse(courseData, id);
+      const response = await axios.post(`http://localhost:3300/api/allcourses/${courseId}/subcourses`, courseData);
+      console.log(response.data); // Log response data to see server's response
       setLoading(false)
-      alert('Course updated successfully:', response);
+      alert('Course uploaded successfully');
     } catch (error) {
-        setLoading(false)
-      alert('Error on updating course:', error.message);
+      setLoading(false)
+      console.error('Error uploading course:', error);
+      alert('Error uploading course:', error.message);
     }
-    console.log(courseData)
   };
   if(loading){
     return <Loading/>
   }
+  
 
   return (
     <div className='course-upload container-fluid p-3 light-bg'>
+
       <div className="course-details bg-white mb-4 p-3 border">
-        
+        <h2>Course Details</h2>
+        <div className="form-group">
+            <label htmlFor="" className="form-label">Select course</label>
+            <select
+            name="courseId"
+            className='form-select p-3 mb-3'
+            value={courseId}
+            onChange={(e) => {setCourseId(e.target.value)}}
+            >
+                <option value="" disabled selected>Select course</option>
+                {
+                    allCourses.map((item, index)=>(
+                        <option value={item._id}>{item.courseName}</option>
+                    ))
+                }
+            </select>
+        </div>
         <div className="row">
             <div className="col-12">
                 <div className="row">
-                    <h1 className='fs-4'>SEO</h1>
-                    <hr />
+                    <h1>SEO</h1>
                     <div className="col-12 col-md-3">
                     <label htmlFor="" className="form-label">Title</label>
                     <input
                     type="text"
                     placeholder='Course  Tag'
                     className='form-control'
-                    value={courseData?.seo?.title}
+                    value={courseData.seo.title}
                     onChange={(e) => handleChange('seo.title', e.target.value)}
                     />
                     </div>
@@ -166,14 +185,12 @@ const Update = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <hr />
-                    <h1 className='fs-4'>Course Details</h1>
-                    <hr />
+                    <h1>Course Details</h1>
                     <div className="col-12 col-md-3">
-                    <label htmlFor="" className="form-label">Instructor</label>
+                    <label htmlFor="" className="form-label">Title</label>
                     <input
                     type="text"
-                    placeholder='Course  Instructor'
+                    placeholder='Course  Tag'
                     className='form-control'
                     value={courseData.details.Instructor}
                     onChange={(e) => handleChange('details.Instructor', e.target.value)}
@@ -192,7 +209,7 @@ const Update = () => {
                     <div className="col-12 col-md-3">
                     <label htmlFor="" className="form-label">admisionStart</label>
                     <input
-                    type="date"
+                    type="text"
                     placeholder='Seo Keywords'
                     className='form-control'
                     value={courseData.details.admisionStart}
@@ -343,7 +360,7 @@ const Update = () => {
         ))}
         <button className='main-btn' onClick={handleAddFAQ}>Add FAQ</button>
       </div> */}
-       <div className="faq bg-white p-3 mb-4 border">
+       <div className="module bg-white p-3 mb-4 border">
      <h2 className='fs-3  mb-4'>FAQs</h2>
       {courseData.faqs.map((faq, index) => (
   <div key={index}>
@@ -380,6 +397,46 @@ const Update = () => {
 ))}
 
       <button  className='main-btn' onClick={handleAddFAQ}>Add FAQ</button>
+
+     </div>
+
+     <div className="module bg-white p-3 mb-4 border">
+     <h2 className='fs-3  mb-4'>Modules</h2>
+      {courseData.modules.map((module, index) => (
+  <div key={index}>
+    <label htmlFor="module" className='form-label'>modules</label>
+    <input
+      type="text"
+      placeholder="Title"
+      className='form-control'
+      value={module.title}
+      onChange={(e) =>
+        setCourseData((prevData) => ({
+          ...prevData,
+          modules: prevData.modules.map((item, i) =>
+            i === index ? { ...item, title: e.target.value } : item
+          ),
+        }))
+      }
+    />
+    <textarea
+      type="text"
+      placeholder="Description"
+      value={module.description}
+      className='form-control'
+      onChange={(e) =>
+        setCourseData((prevData) => ({
+          ...prevData,
+          modules: prevData.modules.map((item, i) =>
+            i === index ? { ...item, description: e.target.value } : item
+          ),
+        }))
+      }
+    />
+  </div>
+))}
+
+      <button  className='main-btn' onClick={handleAddModule}>Add Module</button>
 
      </div>
 
@@ -423,10 +480,10 @@ const Update = () => {
 
      </div>
 
-      <button onClick={handleUpload} className='main-btn fs-5 px-5'>Upload Course</button>
+      <button onClick={handleUpload} className='main-btn bg-dark'>Upload Course</button>
       
     </div>
   );
 };
 
-export default Update;
+export default Subcourses;

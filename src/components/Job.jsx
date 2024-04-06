@@ -28,14 +28,16 @@ function Job() {
   };
   const [BlogsData, setBlogsData] = useState({
     companyName: '',
-            technology: '',
-            jd: '',
-            experience: '',
-            title:"",
-            openings:"",
-            package:"",
-            location:"",
-            bond:"yes"
+    companyName: "",
+    technology: "",
+    jd: "",
+    experience: "",
+    title:"",
+    openings:"",
+    package:"",
+    location:"",
+    bond:"yes",
+    link:""
   });
 
   const handleChange = (e) => {
@@ -64,7 +66,8 @@ function Job() {
             openings:"",
             package:"",
             location:"",
-            bond:"yes"
+            bond:"yes",
+            link:""
         });
       })
       .catch((error) => {
@@ -186,6 +189,21 @@ function Job() {
                 className='form-control p-3'
                 placeholder='experience'
                 value={BlogsData.experience}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className='col-12 col-md-4 col-lg-4 mb-3'>
+            <div className='form-group'>
+              <label htmlFor='experience' className='form-label'>
+               Apply Link
+              </label>
+              <input
+                type='text'
+                name='link'
+                className='form-control p-3'
+                placeholder='link'
+                value={BlogsData.link}
                 onChange={handleChange}
               />
             </div>
