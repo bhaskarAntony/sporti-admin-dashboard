@@ -42,8 +42,15 @@
 .app-left{
     height: 100vh;
     overflow: auto;
-    background: #151515 !important;
+    background: linear-gradient(45deg, #282972, #522872) !important;
     padding: 20px 5px;
+}
+th, .navbar{
+     background: linear-gradient(45deg, #282972, #522872) !important;
+     color: #fff !important;
+}
+.navbar a{
+    color: #fff !important;
 }
 
 .sidenav{
@@ -56,13 +63,17 @@
 .sidenav .sidenav-item{
     padding: 10px;
     margin-bottom: 15px;
-    background-color: #1f1e1eab;
+    background-color: #f7e2ff26;
     width: 100%;
     border-radius: 10px;
     cursor: pointer;
 }
 .sidenav .sidenav-item:hover{
-    background-color: rgb(50, 50, 50);
+    background-color: rgb(255, 255, 255);
+   
+}
+.sidenav .sidenav-item:hover a{
+    color: #522872 !important;
 }
 .sidenav .sidenav-item a{
     text-decoration: none;

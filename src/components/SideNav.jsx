@@ -16,12 +16,10 @@ function SideNav() {
   <div class="container-fluid d-flex justif-content-between">
     <a class="navbar-brand" href="#">Admin Dashboard</a>
     <div className="d-flex gap-2">
-    <Button variant="primary" onClick={handleShow}>
+    <Button variant="primary" onClick={handleShow} className="d-block d-md-none">
     <i class="bi bi-list text-white fs-3"></i>
       </Button>
-      <Link to="/imageStore"><Button variant="success">
-      <i class="bi bi-images"></i>
-      </Button></Link>
+     
     </div>
   </div>
 </nav>
@@ -34,23 +32,16 @@ function SideNav() {
           <ul className="sidenav">
             <li className="sidenav-item">
             <a href="/"><i class="bi bi-house-fill mx-2"></i>Home</a>
-            </li>
+            </li>            
             <li className="sidenav-item">
-            <a href="/course"><i class="bi bi-mortarboard-fill mx-2"></i>Courses</a>
+            <a href="/bookings"><i class="bi bi-bar-chart-steps mx-2"></i>Room Bookings</a>
             </li>
+            
+            
             <li className="sidenav-item">
-            <a href="/training-mode"><i class="bi bi-back mx-2"></i>Traning Mode</a>
+            <a href="/feedback"><i class="bi bi-stars mx-2"></i>Feedback</a>
             </li>
-            <li className="sidenav-item">
-            <a href="/advantages"><i class="bi bi-bar-chart-steps mx-2"></i>Advantages</a>
-            </li>
-            <li className="sidenav-item">
-            <a href="/companies"><i class="bi bi-building mx-2"></i>Companies</a>
-            </li>
-            <li className="sidenav-item">
-            <a href="/"><i class="bi bi-stars mx-2"></i>Elite Program</a>
-            </li>
-            <li className="sidenav-item">
+            {/* <li className="sidenav-item">
             <a href="/testimonials"><i class="bi bi-quote mx-2"></i>Testimanials</a>
             </li>
             <li className="sidenav-item">
@@ -67,7 +58,7 @@ function SideNav() {
             </li>
             <li className="sidenav-item">
             <a href="/job"><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</a>
-            </li>
+            </li> */}
           </ul>
 
         </Offcanvas.Body>
