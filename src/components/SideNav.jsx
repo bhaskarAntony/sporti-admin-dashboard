@@ -38,9 +38,9 @@ function SideNav() {
             </li>
             
             
-            <li className="sidenav-item">
+            {/* <li className="sidenav-item">
             <a href="/feedback"><i class="bi bi-stars mx-2"></i>Feedback</a>
-            </li>
+            </li> */}
             {/* <li className="sidenav-item">
             <a href="/testimonials"><i class="bi bi-quote mx-2"></i>Testimanials</a>
             </li>

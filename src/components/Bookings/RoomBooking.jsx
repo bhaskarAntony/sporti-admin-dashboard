@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 // import { useDialog } from '../../popups/DialogContext';
 import Loading from '../popup/Loading';
 import SuccessPopup from '../../popups/SuccessPopup';
+import { toast } from 'react-toastify';
 
 function MainRoomBook() {
     const [isLoading, setIsLoading] = useState(false)
@@ -245,9 +246,10 @@ function MainRoomBook() {
                 if (success) {
                     setIsLoading(false);
                     // openDialog('Success', `Your booking request has been sent to admin for confirmation and it takes one  working day  for the same. SMS will be sent to the registered mobile number. please note the  acknowledgement number for future  reference.  ApplicationNo is ${user.applicationNo}`, false);
-                    navigate(`/payment/${user.applicationNo}`);
+                   toast.success('successfully added')
                 } else {
                     setIsLoading(false);
+                    toast.error("error", 'something went wrong please try again later..')
                     // openDialog('Error', 'something went wrong please try again later..', true);
                 }
             })

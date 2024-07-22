@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 // import './style.css'; // Include the CSS file
 import Loading from '../popup/Loading';
+import { toast } from 'react-toastify';
 
 function MainFunctionHallBooking() {
     const { sporti } = useParams();
@@ -236,8 +237,10 @@ function MainFunctionHallBooking() {
                     setIsLoading(false);
                     // openDialog('Success', `Your booking request has been sent to admin for confirmation and it takes one  working day  for the same. SMS will be sent to the registered mobile number. please note the  acknowledgement number for future  reference.  ApplicationNo is ${user.applicationNo} `, false);
                     // navigate(`/payment/${user.applicationNo}`);
+                    toast.success('successfully added')
                 } else {
                     setIsLoading(false);
+                    toast.error('error, something went wrong please try again later..')
                     // openDialog('Error', 'something went wrong please try again later..', true);
                 }
             })

@@ -43,7 +43,7 @@ function App() {
         <li className='sidenav-item'><Link to='/youtube-videos'><i class="bi bi-youtube mx-2"></i>Youtube Videos</Link></li>
         <li className='sidenav-item'><Link to='/blogs'><i class="bi bi-postcard-heart-fill mx-2"></i>Blogs</Link></li>
         <li className='sidenav-item'><Link to='/job'><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</Link></li> */}
-         <li className='sidenav-item'><Link to='/feedback'><i class="bi bi-quote mx-2"></i>feedback list</Link></li>
+         {/* <li className='sidenav-item'><Link to='/feedback'><i class="bi bi-quote mx-2"></i>feedback list</Link></li> */}
       </ul>
     </div>
     </div>
