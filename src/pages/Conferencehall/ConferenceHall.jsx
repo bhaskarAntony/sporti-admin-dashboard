@@ -41,7 +41,7 @@ const ConferenceHall = () => {
     const fetchBookings = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get('http://localhost:5000/api/admin',{
+            const res = await axios.get('https://sporti-services-backend.onrender.com/api/admin',{
             headers: { Authorization: `Bearer ${token}` }
         });
             setBookings(res.data);

@@ -41,7 +41,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        axios.get('http://localhost:5000/api/admin', {
+        axios.get('https://sporti-services-backend.onrender.com/api/admin', {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => {
