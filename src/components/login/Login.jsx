@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
 import Loading from '../popup/Loading';
 import { toast } from 'react-toastify';
+import { useAuth } from '../privateRoutes/AuthContext';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -11,6 +12,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const {login} = useAuth()
 
     const handleSubmit = async (e) => {
         setLoading(true)
@@ -20,6 +22,7 @@ const Login = () => {
             setLoading(false);
             toast.success('Login successful', { autoClose: 3000 })
             localStorage.setItem('token', res.data.token);
+            login(res.data.token);
             navigate('/');
         } catch (error) {
             setLoading(false);

@@ -11,13 +11,14 @@ import Login from './components/login/Login';
 import PrivateRoute from './components/privateRoutes/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from './components/privateRoutes/AuthContext';
 
 
 
 function App() {
+  const { isAuthenticated, logout} = useAuth();
   return (
     <div className='container-fluid app'>
-    <BrowserRouter>
     <ToastContainer/>
     
    <div className='row'>
@@ -25,6 +26,7 @@ function App() {
     <div className='nav p-3'>
       <div className="nav-top py-1 mb-3">
         <span className="fs-3 text-white">Admin Pannel</span>
+        
       </div>
       <ul className="sidenav">
         <li className='sidenav-item'><Link to='/'><i class="bi bi-house-fill mx-2"></i> Dashboard</Link></li>
@@ -45,6 +47,7 @@ function App() {
         <li className='sidenav-item'><Link to='/job'><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</Link></li> */}
          {/* <li className='sidenav-item'><Link to='/feedback'><i class="bi bi-quote mx-2"></i>feedback list</Link></li> */}
       </ul>
+
     </div>
     </div>
     <div className='col-sm-12 col-md-9 col-lg-10 app-right p-0'>
@@ -52,16 +55,16 @@ function App() {
    <div className="p-3">
    <Routes>
      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
      <Route path='/members' element={<Members/>}/>
-     <Route path='/members/view/:id' element={<ViewMember/>}/>
-     <Route path='/feedback' element={<Feedback/>}/>
-     <Route path='/bookings' element={<ConferenceHall/>}/>
+     <Route element={<PrivateRoute/>}>
+      <Route path='/' element={<Dashboard/>}/>
+      <Route path='/bookings' element={<ConferenceHall/>}/>
+     </Route>
+  
     </Routes>
    </div>
     </div>
    </div>
-    </BrowserRouter>
     </div>
   
   );

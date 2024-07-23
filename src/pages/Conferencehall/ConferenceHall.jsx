@@ -6,6 +6,8 @@ import Select from 'react-select';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import MainRoomBook from '../../components/Bookings/RoomBooking';
 import MainFunctionHallBooking from '../../components/Bookings/ServiceBook';
+import { toast } from 'react-toastify';
+import Loading from '../../components/popup/Loading';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
@@ -29,6 +31,7 @@ const ConferenceHall = () => {
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
     const [totalCost, setTotalCost] = useState(0);
    const [serviceBook, setServiceBook] = useState(false);
+   const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         fetchBookings();
@@ -45,6 +48,7 @@ const ConferenceHall = () => {
             headers: { Authorization: `Bearer ${token}` }
         });
             setBookings(res.data);
+            setLoading(false)
             processChartData(res.data);
         } catch (error) {
             console.error('Error:', error);
@@ -80,20 +84,30 @@ const ConferenceHall = () => {
     };
 
     const handleRejectBooking = async () => {
+        setLoading(true)
         try {
             await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBookingId}/reject`, { rejectionReason });
             fetchBookings(); // Refresh bookings after rejection
             handleCloseModal();
+            setLoading(false);
+            toast.warning('rejected the request')
         } catch (error) {
+            setLoading(false)
+            toast.error('error', error.message)
             console.error('Error:', error);
         }
     };
 
     const handleConfirmBooking = async (bookingId) => {
+        setLoading(true)
         try {
             await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${bookingId}/confirm`);
             fetchBookings(); // Refresh bookings after confirmation
+            setLoading(false);
+            toast.success('accepted the request')
         } catch (error) {
+            setLoading(false);
+            toast.error('error', error.message)
             console.error('Error:', error);
         }
     };
@@ -169,6 +183,9 @@ const ConferenceHall = () => {
     const openServiceModal = () => setServiceBook(true)
     const closeServiceModal = () => setServiceBook(false)
 
+    if(loading){
+        return <Loading/> 
+    }
     return (
         <Container>
             <Row className="mb-4">

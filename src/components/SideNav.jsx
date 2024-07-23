@@ -3,9 +3,11 @@ import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link } from 'react-router-dom';
+import { useAuth } from './privateRoutes/AuthContext';
 
 function SideNav() {
   const [show, setShow] = useState(false);
+  const {isAuthenticated, logout} = useAuth()
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -13,8 +15,11 @@ function SideNav() {
   return (
     <>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid d-flex justif-content-between">
+  <div class="container-fluid d-flex justify-content-between">
     <a class="navbar-brand" href="#">Admin Dashboard</a>
+    {
+isAuthenticated?(<button className='btn btn-danger' onClick={logout}>Logout</button>):(<Link to="/" className="btn btn-primary">Login</Link>)
+      }
     <div className="d-flex gap-2">
     <Button variant="primary" onClick={handleShow} className="d-block d-md-none">
     <i class="bi bi-list text-white fs-3"></i>
@@ -60,6 +65,10 @@ function SideNav() {
             <a href="/job"><i class="bi bi-postcard-heart-fill mx-2"></i>New Job</a>
             </li> */}
           </ul>
+
+          {
+isAuthenticated?(<button className='btn btn-danger' onClick={logout}>Logout</button>):(<Link to="/" className="btn btn-light text-dark">Login</Link>)
+      }
 
         </Offcanvas.Body>
       </Offcanvas>

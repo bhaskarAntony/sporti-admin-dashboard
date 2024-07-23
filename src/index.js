@@ -6,11 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.js'
 import '../node_modules/bootstrap-icons/font/bootstrap-icons.css'
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './components/privateRoutes/AuthContext.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+ <BrowserRouter>
+  <AuthProvider>
+  <App />
+  </AuthProvider>
+ </BrowserRouter>
   </React.StrictMode>
 );
 

@@ -1,10 +1,16 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import Loading from '../popup/Loading';
 
-const PrivateRoute = ({ children }) => {
-    const isAuthenticated = !!localStorage.getItem('token');
-    
-    return isAuthenticated ? children : <Navigate to="/login" />;
+const ProtectedRoute = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <Loading/>; // You can replace this with a loading spinner or any loading component
+  }
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;
