@@ -5,6 +5,7 @@ import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap'
 import Loading from '../popup/Loading';
 import { toast } from 'react-toastify';
 import { useAuth } from '../privateRoutes/AuthContext';
+import DOMPurify from 'dompurify';
 
 function sanitizeInput(input) {
     return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
@@ -20,8 +21,20 @@ const Login = () => {
     const handleSubmit = async (e) => {
         setLoading(true)
         e.preventDefault();
+         // Client-side validation for max length and sanitization
+            if (username.length > 30 || password.length > 30) {
+                const message = 'Email or password is too long';
+                const details =  'Please enter shorter email and password.';
+                
+                toast.error(
+                DOMPurify.sanitize(message),
+                DOMPurify.sanitize(details),
+                true
+                );
+                return;
+            }
         try {
-            const res = await axios.post('https://sporti-services-backend.onrender.com/api/admin/login', { username, password });
+            const res = await axios.post('http://localhost:5000/api/admin/login', { username, password });
             setLoading(false);
             toast.success('Login successful', { autoClose: 3000 })
             localStorage.setItem('token', res.data.token);
@@ -54,8 +67,9 @@ const Login = () => {
                                         placeholder="Enter username"
                                         name="username"
                                         value={username} 
-                                        onChange={(e) => setUsername(sanitizeInput(e.target.value))} 
+                                        onChange={(e) => setUsername(sanitizeInput(e.target.value.trim()))} 
                                         required 
+                                        maxLength={30}
                                     />
                                 </Form.Group>
 
@@ -65,8 +79,9 @@ const Login = () => {
                                         type="password" 
                                         placeholder="Password" 
                                         value={password} 
-                                        onChange={(e) => setPassword(sanitizeInput(e.target.value))} 
+                                        onChange={(e) => setPassword(sanitizeInput(e.target.value.trim().toLowerCase()))} 
                                         required 
+                                        maxLength={30}
                                     />
                                 </Form.Group>
 

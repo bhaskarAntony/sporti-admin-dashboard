@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../popup/Loading';
 import SuccessPopup from '../../popups/SuccessPopup';
 import { toast } from 'react-toastify';
+import DOMPurify from 'dompurify';
 
 function sanitizeInput(input) {
     return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });

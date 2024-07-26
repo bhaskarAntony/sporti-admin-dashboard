@@ -6,6 +6,7 @@ import { Dropdown } from 'react-bootstrap';
 // import './style.css'; // Include the CSS file
 import Loading from '../popup/Loading';
 import { toast } from 'react-toastify';
+import DOMPurify from 'dompurify';
 
 function sanitizeInput(input) {
     return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
@@ -65,7 +66,7 @@ function MainFunctionHallBooking() {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: sanitizeInput(value);
+            [name]: sanitizeInput(value)
         });
         setErrors({
             ...errors,
