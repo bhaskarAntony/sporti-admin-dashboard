@@ -7,6 +7,10 @@ import { Dropdown } from 'react-bootstrap';
 import Loading from '../popup/Loading';
 import { toast } from 'react-toastify';
 
+function sanitizeInput(input) {
+    return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+} 
+
 function MainFunctionHallBooking() {
     const { sporti } = useParams();
     const [formData, setFormData] = useState({
@@ -61,7 +65,7 @@ function MainFunctionHallBooking() {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: sanitizeInput(value);
         });
         setErrors({
             ...errors,
@@ -72,7 +76,7 @@ function MainFunctionHallBooking() {
     const handleDropdownChange = (name, value) => {
         setFormData({
             ...formData,
-            [name]: value
+            [name]: sanitizeInput(value)
         });
         setErrors({
             ...errors,

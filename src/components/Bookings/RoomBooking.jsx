@@ -8,6 +8,9 @@ import Loading from '../popup/Loading';
 import SuccessPopup from '../../popups/SuccessPopup';
 import { toast } from 'react-toastify';
 
+function sanitizeInput(input) {
+    return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+} 
 function MainRoomBook() {
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
@@ -49,8 +52,8 @@ function MainRoomBook() {
 
     const openModal = (title, desc) => {
         setShowModal(true);
-        setDesc(desc);
-        setTitle(title);
+        setDesc(sanitizeInput(desc));
+        setTitle(sanitizeInput(title));
     };
     const navigate = useNavigate()
     // const { openDialog } = useDialog();
@@ -60,7 +63,7 @@ function MainRoomBook() {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: sanitizeInput(value)
         });
         setErrors({
             ...errors,
@@ -71,7 +74,7 @@ function MainRoomBook() {
     const handleDropdownChange = (name, value) => {
         setFormData({
             ...formData,
-            [name]: value
+            [name]: sanitizeInput(value)
         });
         setErrors({
             ...errors,

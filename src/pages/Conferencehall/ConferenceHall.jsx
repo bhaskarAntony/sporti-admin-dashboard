@@ -16,7 +16,7 @@ const ConferenceHall = () => {
     const [showModal, setShowModal] = useState(false);
     const [showManualBookingModal, setShowManualBookingModal] = useState(false);
     const [rejectionReason, setRejectionReason] = useState('');
-    const [selectedBookingId, setSelectedBookingId] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
     const [filteredBookings, setFilteredBookings] = useState([]);
     const [filters, setFilters] = useState({
         serviceType: null,
@@ -30,8 +30,10 @@ const ConferenceHall = () => {
     const [sporti, setSporti] = useState({});
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
     const [totalCost, setTotalCost] = useState(0);
-   const [serviceBook, setServiceBook] = useState(false);
-   const [loading, setLoading] = useState(true)
+    const [serviceBook, setServiceBook] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [viewDetails, setViewDetails] = useState(null);
+    const [editModal, setEditModal] = useState(false);
 
     useEffect(() => {
         fetchBookings();
@@ -44,11 +46,11 @@ const ConferenceHall = () => {
     const fetchBookings = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await axios.get('https://sporti-services-backend.onrender.com/api/admin',{
-            headers: { Authorization: `Bearer ${token}` }
-        });
+            const res = await axios.get('https://sporti-services-backend.onrender.com/api/admin', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setBookings(res.data);
-            setLoading(false)
+            setLoading(false);
             processChartData(res.data);
         } catch (error) {
             console.error('Error:', error);
@@ -72,42 +74,90 @@ const ConferenceHall = () => {
         setFilteredBookings(filtered);
     };
 
-    const handleShowModal = (bookingId) => {
-        setSelectedBookingId(bookingId);
+    const clearFilters = () => {
+        setFilters({
+            serviceType: null,
+            serviceName: null,
+            checkIn: null,
+            checkOut: null,
+        });
+    };
+
+    const handleShowModal = (booking) => {
+        setSelectedBooking(booking);
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
         setRejectionReason('');
-        setSelectedBookingId(null);
+        setSelectedBooking(null);
     };
 
     const handleRejectBooking = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
-            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBookingId}/reject`, { rejectionReason });
+            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
             fetchBookings(); // Refresh bookings after rejection
             handleCloseModal();
             setLoading(false);
-            toast.warning('rejected the request')
+            toast.warning('Rejected the request');
         } catch (error) {
-            setLoading(false)
-            toast.error('error', error.message)
+            setLoading(false);
+            toast.error('Error', error.message);
             console.error('Error:', error);
         }
     };
 
     const handleConfirmBooking = async (bookingId) => {
-        setLoading(true)
+        setLoading(true);
         try {
             await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${bookingId}/confirm`);
             fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
-            toast.success('accepted the request')
+            toast.success('Accepted the request');
         } catch (error) {
             setLoading(false);
-            toast.error('error', error.message)
+            toast.error('Error', error.message);
+            console.error('Error:', error);
+        }
+    };
+
+    const handleViewDetails = (booking) => {
+        setViewDetails(booking);
+        setShowModal(true);
+    };
+
+    const handleDeleteBooking = async (bookingId) => {
+        setLoading(true);
+        try {
+            await axios.delete(`https://sporti-services-backend.onrender.com/api/sporti/service/${bookingId}`);
+            fetchBookings(); // Refresh bookings after deletion
+            setLoading(false);
+            toast.success('Deleted the booking');
+        } catch (error) {
+            setLoading(false);
+            toast.error('Error', error.message);
+            console.error('Error:', error);
+        }
+    };
+
+    const handleUpdateBooking = (booking) => {
+        setSelectedBooking(booking);
+        setEditModal(true);
+    };
+
+    const handleEditSubmit = async () => {
+        setLoading(true);
+        try {
+            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}`, selectedBooking);
+            fetchBookings(); // Refresh bookings after update
+            setEditModal(false);
+            setLoading(false);
+            toast.success('Updated the booking');
+        } catch (error) {
+            setLoading(false);
+            toast.error('Error', error.message);
             console.error('Error:', error);
         }
     };
@@ -137,10 +187,6 @@ const ConferenceHall = () => {
         setTotalCost(totalCost);
         setMonthlyRevenue(monthlyRevenueData);
     };
-
-  
-
- 
 
     const generateChartData = (data, label, colors) => ({
         labels: Object.keys(data),
@@ -180,12 +226,13 @@ const ConferenceHall = () => {
         </Table>
     );
 
-    const openServiceModal = () => setServiceBook(true)
-    const closeServiceModal = () => setServiceBook(false)
+    const openServiceModal = () => setServiceBook(true);
+    const closeServiceModal = () => setServiceBook(false);
 
-    if(loading){
-        return <Loading/> 
+    if (loading) {
+        return <Loading />;
     }
+
     return (
         <Container>
             <Row className="mb-4">
@@ -213,7 +260,7 @@ const ConferenceHall = () => {
                 </Col>
                 <Col>
                     <Form.Group>
-                        <Form.Label>Check In Date</Form.Label>
+                        <Form.Label>Check In</Form.Label>
                         <Select
                             value={filters.checkIn}
                             onChange={option => setFilters({ ...filters, checkIn: option })}
@@ -224,7 +271,7 @@ const ConferenceHall = () => {
                 </Col>
                 <Col>
                     <Form.Group>
-                        <Form.Label>Check Out Date</Form.Label>
+                        <Form.Label>Check Out</Form.Label>
                         <Select
                             value={filters.checkOut}
                             onChange={option => setFilters({ ...filters, checkOut: option })}
@@ -233,155 +280,137 @@ const ConferenceHall = () => {
                         />
                     </Form.Group>
                 </Col>
+                <Col className="d-flex align-items-end">
+                    <Button variant="secondary" onClick={clearFilters}>Clear Filters</Button>
+                </Col>
             </Row>
-         <div className="d-flex gap-3">
-         <Button className="mb-4" onClick={() => setShowManualBookingModal(true)}>Add Manual Room Booking</Button>
-         <Button className="mb-4" onClick={openServiceModal}>Add Manual Service Booking</Button>
-         </div>
-            {filteredBookings.length === 0 && (
-                <p>No bookings available for the selected filters.</p>
-            )}
-            {filteredBookings.length > 0 && (
-                <>
-                    <Table striped bordered hover className="mb-4">
-                        <thead>
-                            <tr className='table-primary'>
-                                <th>User</th>
-                                <th>Service Name</th>
-                                <th>Event Date</th>
-                                <th>Status</th>
-                                <th>Total Cost</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredBookings.map((booking) => (
-                                <tr key={booking._id}>
-                                    <td>{booking.username}</td>
-                                    <td>{booking.serviceName}</td>
-                                    <td>{new Date(booking.eventdate).toLocaleDateString()}</td>
-                                    <td className={booking.status === 'confirmed' ? 'text-success' : 'text-danger'}>{booking.status}</td>
-                                    <td>{booking.totalCost}</td>
-                                    <td>
-                                        {booking.status === 'pending' && (
-                                            <div className='d-flex gap-2'>
-                                                <Button className='btn btn-primary' onClick={() => handleConfirmBooking(booking._id)}>Confirm</Button>
-                                                <Button className='btn btn-danger' onClick={() => handleShowModal(booking._id)}>Reject</Button>
-                                            </div>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                    <div className="row">
-                        <div className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Monthly Users</Card.Title>
-                                    <Bar data={generateChartData(monthlyUsers, 'Monthly Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                                    {renderTable(monthlyUsers)}
-                                </Card.Body>
-                            </Card>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Service Types</Card.Title>
-                                    <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                                    {renderTable(serviceTypes)}
-                                </Card.Body>
-                            </Card>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Service Names</Card.Title>
-                                    <Pie data={generateChartData(serviceNames, 'Service Names', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                                    {renderTable(serviceNames)}
-                                </Card.Body>
-                            </Card>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Sporti</Card.Title>
-                                    <Pie data={generateChartData(sporti, 'Sporti', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                                    {renderTable(sporti)}
-                                </Card.Body>
-                            </Card>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Monthly Revenue</Card.Title>
-                                    <Bar data={generateChartData(monthlyRevenue, 'Monthly Revenue', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                                    {renderTable(monthlyRevenue)}
-                                </Card.Body>
-                            </Card>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Total Cost</Card.Title>
-                                    <p>Total Cost: {totalCost}</p>
-                                    <Pie data={generateChartData({ totalCost }, 'Total Cost', ['#FF6384'])} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                                </Card.Body>
-                            </Card>
-                        </div>
-                    </div>
-                </>
-            )}
+
+            {filteredBookings.map((booking, index) => (
+                <Card className="mb-4" key={index}>
+                    <Card.Body>
+                        <Card.Title>{booking.serviceType}</Card.Title>
+                        <Card.Text>{booking.serviceName}</Card.Text>
+                        <Card.Text>Date: {new Date(booking.eventdate).toLocaleDateString()}</Card.Text>
+                        <Card.Text>Total Cost: {booking.totalCost}</Card.Text>
+                        <Button variant="success" onClick={() => handleConfirmBooking(booking._id)}>Confirm</Button>
+                        <Button variant="danger" onClick={() => handleShowModal(booking)}>Reject</Button>
+                        <Button variant="info" onClick={() => handleViewDetails(booking)}>View
+                        </Button>
+                        <Button variant="warning" onClick={() => handleUpdateBooking(booking)}>
+                             Update
+                        </Button>
+                        <Button variant="danger" onClick={() => handleDeleteBooking(booking._id)}>
+                             Delete
+                        </Button>
+                    </Card.Body>
+                </Card>
+            ))}
+
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Provide Rejection Reason</Modal.Title>
+                    <Modal.Title>{viewDetails ? 'Booking Details' : 'Reject Booking'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form.Group controlId="rejectionReason">
-                        <Form.Label>Reason</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter reason for rejection"
-                            value={rejectionReason}
-                            onChange={(e) => setRejectionReason(e.target.value)}
-                        />
-                    </Form.Group>
+                    {viewDetails ? (
+                        <div>
+                            <p><strong>Service Type:</strong> {viewDetails.serviceType}</p>
+                            <p><strong>Service Name:</strong> {viewDetails.serviceName}</p>
+                            <p><strong>Date:</strong> {new Date(viewDetails.eventdate).toLocaleDateString()}</p>
+                            <p><strong>Total Cost:</strong> {viewDetails.totalCost}</p>
+                        </div>
+                    ) : (
+                        <Form.Group>
+                            <Form.Label>Rejection Reason</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={rejectionReason}
+                                onChange={(e) => setRejectionReason(e.target.value)}
+                            />
+                        </Form.Group>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleRejectBooking}>
-                        Reject
-                    </Button>
+                    <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+                    {!viewDetails && <Button variant="primary" onClick={handleRejectBooking}>Reject</Button>}
                 </Modal.Footer>
             </Modal>
-            <Modal show={showManualBookingModal} onHide={() => setShowManualBookingModal(false)} size='lg'>
+
+            <Modal show={editModal} onHide={() => setEditModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Manual  Room Booking</Modal.Title>
+                    <Modal.Title>Edit Booking</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <MainRoomBook/>
+                    {selectedBooking && (
+                        <Form>
+                            <Form.Group>
+                                <Form.Label>Service Type</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={selectedBooking.serviceType}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, serviceType: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Service Name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={selectedBooking.serviceName}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, serviceName: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Date</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    value={new Date(selectedBooking.eventdate).toISOString().substring(0, 10)}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, eventdate: new Date(e.target.value) })}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Total Cost</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    value={selectedBooking.totalCost}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, totalCost: e.target.value })}
+                                />
+                            </Form.Group>
+                        </Form>
+                    )}
                 </Modal.Body>
-                {/* <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowManualBookingModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" onClick={handleAddManualBooking}>
-                        Add Booking
-                    </Button>
-                </Modal.Footer> */}
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setEditModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={handleEditSubmit}>Save changes</Button>
+                </Modal.Footer>
             </Modal>
 
-              <Modal show={serviceBook} onHide={closeServiceModal} size='lg'>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add Manual Service Booking</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <MainFunctionHallBooking/>
-                </Modal.Body>
-               
-            </Modal>
+            <Row>
+                <Col>
+                    <h3>Monthly Users</h3>
+                    {renderTable(monthlyUsers)}
+                    <Bar data={generateChartData(monthlyUsers, 'Monthly Users', colors)} />
+                </Col>
+                <Col>
+                    <h3>Service Types</h3>
+                    {renderTable(serviceTypes)}
+                    <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} />
+                </Col>
+                <Col>
+                    <h3>Service Names</h3>
+                    {renderTable(serviceNames)}
+                    <Pie data={generateChartData(serviceNames, 'Service Names', colors)} />
+                </Col>
+                <Col>
+                    <h3>Sporti</h3>
+                    {renderTable(sporti)}
+                    <Pie data={generateChartData(sporti, 'Sporti', colors)} />
+                </Col>
+                <Col>
+                    <h3>Monthly Revenue</h3>
+                    {renderTable(monthlyRevenue)}
+                    <Bar data={generateChartData(monthlyRevenue, 'Monthly Revenue', colors)} />
+                </Col>
+            </Row>
         </Container>
     );
 };
