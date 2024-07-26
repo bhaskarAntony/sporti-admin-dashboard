@@ -6,6 +6,9 @@ import Loading from '../popup/Loading';
 import { toast } from 'react-toastify';
 import { useAuth } from '../privateRoutes/AuthContext';
 
+function sanitizeInput(input) {
+    return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+} 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -51,7 +54,7 @@ const Login = () => {
                                         placeholder="Enter username"
                                         name="username"
                                         value={username} 
-                                        onChange={(e) => setUsername(e.target.value)} 
+                                        onChange={(e) => setUsername(sanitizeInput(e.target.value))} 
                                         required 
                                     />
                                 </Form.Group>
@@ -62,7 +65,7 @@ const Login = () => {
                                         type="password" 
                                         placeholder="Password" 
                                         value={password} 
-                                        onChange={(e) => setPassword(e.target.value)} 
+                                        onChange={(e) => setPassword(sanitizeInput(e.target.value))} 
                                         required 
                                     />
                                 </Form.Group>
