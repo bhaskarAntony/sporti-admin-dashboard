@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
       });
       if (response.status === 200) {
         setUser(response.data.user);
+        document.title = response.data.user.role;
         setIsAuthenticated(true);
         console.log(isAuthenticated);
         return true;

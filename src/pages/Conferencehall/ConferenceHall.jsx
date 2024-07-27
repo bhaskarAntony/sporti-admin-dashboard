@@ -8,9 +8,12 @@ import MainRoomBook from '../../components/Bookings/RoomBooking';
 import MainFunctionHallBooking from '../../components/Bookings/ServiceBook';
 import { toast } from 'react-toastify';
 import Loading from '../../components/popup/Loading';
+import DOMPurify from 'dompurify';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
-
+function sanitizeInput(input) {
+    return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+}
 const ConferenceHall = () => {
     const [bookings, setBookings] = useState([]);
     const [showModal, setShowModal] = useState(false);

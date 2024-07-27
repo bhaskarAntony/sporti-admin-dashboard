@@ -34,7 +34,7 @@ const Login = () => {
                 return;
             }
         try {
-            const res = await axios.post('http://localhost:5000/api/admin/login', { username, password });
+            const res = await axios.post('https://sporti-services-backend.onrender.com/api/admin/login', { username, password });
             setLoading(false);
             toast.success('Login successful', { autoClose: 3000 })
             localStorage.setItem('token', res.data.token);
