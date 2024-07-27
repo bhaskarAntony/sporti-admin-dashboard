@@ -33,7 +33,7 @@ const Login = () => {
                 );
                 return;
             }
-        try {
+        try { 
             const res = await axios.post('https://sporti-services-backend.onrender.com/api/admin/login', { username, password });
             setLoading(false);
             toast.success('Login successful', { autoClose: 3000 })
