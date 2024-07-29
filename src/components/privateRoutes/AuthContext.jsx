@@ -48,10 +48,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token, userData) => {
     Cookies.set('token', token, {
-       expires: 7,
-       secure: true,
-       sameSite: 'strict',
-       httpOnly: true,
+      // httpOnly: true,
+      secure: true, // Ensure this is only set to true if your site is served over HTTPS
+      sameSite: 'Strict',
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
       //  domain: process.env.NODE_ENV === 'production'? '.sporti-services.com' : undefined,
       //  path: '/',
        });
