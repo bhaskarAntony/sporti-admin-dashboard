@@ -5,6 +5,7 @@ import { Container, Row, Col, Card, Table, Button, ProgressBar } from 'react-boo
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import { CSVLink } from 'react-csv';
+import cookies from 'js-cookie'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -40,7 +41,7 @@ const Dashboard = () => {
     const [role, setRole] = useState('');
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = cookies.get('token');
         axios.get('https://sporti-services-backend.onrender.com/api/admin', {
             headers: { Authorization: `Bearer ${token}` }
         })

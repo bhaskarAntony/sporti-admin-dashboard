@@ -9,6 +9,7 @@ import MainFunctionHallBooking from '../../components/Bookings/ServiceBook';
 import { toast } from 'react-toastify';
 import Loading from '../../components/popup/Loading';
 import DOMPurify from 'dompurify';
+import cookies  from 'js-cookie'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 function sanitizeInput(input) {
@@ -47,7 +48,7 @@ const ConferenceHall = () => {
     }, [filters, bookings]);
 
     const fetchBookings = async () => {
-        const token = localStorage.getItem('token');
+        const token = cookies.get('token');
         try {
             const res = await axios.get('https://sporti-services-backend.onrender.com/api/admin', {
                 headers: { Authorization: `Bearer ${token}` }
