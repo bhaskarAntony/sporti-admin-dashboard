@@ -47,7 +47,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (token, userData) => {
-    Cookies.set('token', token, { expires: 7 });
+    Cookies.set('token', token, {
+       expires: 7,
+       secure: true,
+       sameSite: 'strict',
+       httpOnly: true,
+      //  domain: process.env.NODE_ENV === 'production'? '.sporti-services.com' : undefined,
+      //  path: '/',
+       });
     setIsAuthenticated(true);
     setUser(userData);
     navigate('/');
