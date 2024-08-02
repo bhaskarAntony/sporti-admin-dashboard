@@ -12,6 +12,7 @@ import PrivateRoute from './components/privateRoutes/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from './components/privateRoutes/AuthContext';
+import Security from './components/security/Security';
 
 
 
@@ -19,6 +20,7 @@ function App() {
   const { isAuthenticated, logout} = useAuth();
   return (
     <div className='container-fluid app'>
+      <Security/>
     <ToastContainer/>
     
    <div className='row'>
@@ -60,7 +62,6 @@ function App() {
       <Route path='/' element={<Dashboard/>}/>
       <Route path='/bookings' element={<ConferenceHall/>}/>
      </Route>
-  
     </Routes>
    </div>
     </div>

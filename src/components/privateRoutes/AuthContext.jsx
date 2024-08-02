@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = Cookies.get('token');
+    console.log('token', token);
     if (token) {
       validateToken(token).then(isValid => {
         setLoading(false);
@@ -29,14 +30,13 @@ export const AuthProvider = ({ children }) => {
 
   const validateToken = async (token) => {
     try {
-      const response = await axios.post('https://sporti-services-backend.onrender.com/api/auth/validateToken', {}, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const response = await axios.post(`https://sporti-backend-live.onrender.com/api/auth/validateToken`, {}, {
+        withCredentials: true
       });
+      console.log(response);
       if (response.status === 200) {
         setUser(response.data.user);
-        document.title = response.data.user.role;
         setIsAuthenticated(true);
-        console.log(isAuthenticated);
         return true;
       }
       return false;
@@ -46,18 +46,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (token, userData) => {
-    Cookies.set('token', token, {
-      // httpOnly: true,
-      secure: true, // Ensure this is only set to true if your site is served over HTTPS
-      sameSite: 'Strict',
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-      //  domain: process.env.NODE_ENV === 'production'? '.sporti-services.com' : undefined,
-      //  path: '/',
-       });
-    setIsAuthenticated(true);
-    setUser(userData);
-    navigate('/');
+  const login = async (username, password) => {
+    console.log(process.env.REACT_APP_BACKEND_URL);
+    try {
+      const response = await axios.post(`https://sporti-backend-live.onrender.com/api/admin/login`, { username, password }, { withCredentials: true });
+      if (response.status === 200) {
+        setIsAuthenticated(true);
+        setUser(response.data.user);
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
   const logout = () => {

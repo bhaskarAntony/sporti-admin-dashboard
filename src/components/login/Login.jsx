@@ -8,8 +8,15 @@ import { useAuth } from '../privateRoutes/AuthContext';
 import DOMPurify from 'dompurify';
 
 function sanitizeInput(input) {
-    return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
-} 
+    // First, sanitize HTML to prevent XSS
+    let sanitized = DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+
+    // Allow specific characters while removing others
+    // Allow alphanumeric, space, @, ., -, _, and other specific symbols
+    sanitized = sanitized.replace(/[^a-zA-Z0-9@._\- ]/g, '');
+
+    return sanitized;
+}
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -34,16 +41,16 @@ const Login = () => {
                 return;
             }
         try { 
-            const res = await axios.post('https://sporti-services-backend.onrender.com/api/admin/login', { username, password });
-            setLoading(false);
-            toast.success('Login successful', { autoClose: 3000 })
-            // localStorage.setItem('token', res.data.token);
-            login(res.data.token);
+            // const res = await axios.post('https://sporti-services-backend.onrender.com/api/admin/login', { username, password });
+            // setLoading(false);
+            // toast.success('Login successful', { autoClose: 3000 })
+            // // localStorage.setItem('token', res.data.token);
+            login(username, password);
             navigate('/');
         } catch (error) {
             setLoading(false);
             toast.error('error', error)
-            setError('Invalid username or password');
+            setError(error);
             console.error('Login error:', error);
         }
     };

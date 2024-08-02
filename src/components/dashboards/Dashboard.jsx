@@ -42,7 +42,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const token = cookies.get('token');
-        axios.get('https://sporti-services-backend.onrender.com/api/admin', {
+        axios.get('https://sporti-backend-live.onrender.com/api/admin', {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => {

@@ -13,7 +13,14 @@ import cookies  from 'js-cookie'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 function sanitizeInput(input) {
-    return DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+    // First, sanitize HTML to prevent XSS
+    let sanitized = DOMPurify.sanitize(input, { USE_PROFILES: { html: true } });
+
+    // Allow specific characters while removing others
+    // Allow alphanumeric, space, @, ., -, _, and other specific symbols
+    sanitized = sanitized.replace(/[^a-zA-Z0-9@._\- ]/g, '');
+
+    return sanitized;
 }
 const ConferenceHall = () => {
     const [bookings, setBookings] = useState([]);
@@ -50,7 +57,7 @@ const ConferenceHall = () => {
     const fetchBookings = async () => {
         const token = cookies.get('token');
         try {
-            const res = await axios.get('https://sporti-services-backend.onrender.com/api/admin', {
+            const res = await axios.get('https://sporti-backend-live.onrender.com/api/admin', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBookings(res.data);
