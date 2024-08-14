@@ -6,6 +6,11 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, L
 import Select from 'react-select';
 import { CSVLink } from 'react-csv';
 import cookies from 'js-cookie'
+import './style.css'
+import { Avatar } from '@mui/material';
+import { toast } from 'react-toastify';
+import Loading from '../popup/Loading';
+import TooltipTo from '@mui/material/Tooltip';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -39,10 +44,11 @@ const Dashboard = () => {
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
     const [bookings, setBookings] = useState([]);
     const [role, setRole] = useState('');
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const token = cookies.get('token');
-        axios.get('https://sporti-backend-live.onrender.com/api/admin', {
+        axios.get('https://sporti-backend-live.onrender.com/api/sporti/service/bookings', {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => {
@@ -136,13 +142,13 @@ const Dashboard = () => {
                 label: 'Monthly Revenue',
                 data: Object.values(monthlyRevenue),
                 fill: false,
-                borderColor: '#4BC0C0',
+                borderColor: 'transparent',
                 tension: 0.1,
             },
         ],
     };
 
-    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#36A2EB'];
+    const colors = ['#36BA98', '#F19ED2', '#3AA6B9', '#F2C18D', '#9966FF', '#FF9F40', '#E7E9ED', '#36A2EB'];
 
     const filteredData = filterDataByMonth(data);
     const headers = [
@@ -189,8 +195,25 @@ const Dashboard = () => {
         </Card.Text>
     );
 
+    const deleteHandler = (applicationNO) =>{
+        setLoading(true)
+        axios.delete(`https://sporti-backend-live.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
+        .then((res)=>{
+            setLoading(false)
+            toast.success('booking deleted');
+            window.location.reload();
+        })
+        .catch((err)=>{
+            setLoading(false)
+            toast.error(err.message)
+        })
+    }
+    if(loading){
+        return <Loading/>
+    }
+
     return (
-        <Container fluid>
+        <Container fluid className='dashboard p-3 p-md-5'>
             <Row className="my-4">
                 <Col>
                     <Select
@@ -198,6 +221,7 @@ const Dashboard = () => {
                         onChange={handleMonthChange}
                         options={months}
                         placeholder="Select Month"
+                        className='border-1'
                     />
                 </Col>
                 <Col className="text-end">
@@ -205,104 +229,328 @@ const Dashboard = () => {
                         data={filteredData}
                         headers={headers}
                         filename={`booking_data_${selectedMonth ? selectedMonth.label : 'all'}.csv`}
-                        className="btn btn-primary"
+                        className="main-btn"
                     >
-                        Download Data
+                        <i class="bi bi-download"></i> Download Data
                     </CSVLink>
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <Card className="shadow mb-4">
-                        <Card.Body>
-                            <Card.Title>Total Revenue: ₹{totalRevenue}</Card.Title>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={6} className="mb-3">
-                    <Card className="h-100 shadow">
+            <div className="row">
+                <div className="col-md-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                        <div className="icon">
+                        <i class="bi bi-currency-dollar"></i>
+                        </div>
+                       <div>
+                       <h4 className="fs-5">Monthly Revenue</h4>
+                        <h3 className="fs-4">&#8377; {totalRevenue}/-</h3>
+                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                       </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                        <div className="icon">
+                        <i class="bi bi-people"></i>
+                        </div>
+                       <div>
+                       <h4 className="fs-5">Total unique users</h4>
+                        <h3 className="fs-4">250+</h3>
+                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                       </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                        <div className="icon">
+                        <i class="bi bi-ui-checks-grid"></i>
+                        </div>
+                       <div>
+                       <h4 className="fs-5">Montly Bookings</h4>
+                        <h3 className="fs-4">20+</h3>
+                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                       </div>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                        <div className="icon">
+                        <i class="bi bi-currency-dollar"></i>
+                        </div>
+                       <div>
+                       <h4 className="fs-5">Pending Users</h4>
+                        <h3 className="fs-4">{data.filter((item)=>item.paymentStatus=='Pending').length}</h3>
+                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-12">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Recent Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                      <table>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Name</th>
+                            <th>Cadre</th>
+                            <th>Service</th>
+                            <th>Action</th>
+                        </tr>
+                          {
+                            data.map((item, index)=>(
+                              
+                                
+                                <tr>
+                                    {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                    <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                    <td>{item.username}</td>
+                                    <td>{item.officerCadre}</td>
+                                    <td>{item.serviceName}</td>
+                                    <td className=''>
+                                  <div className="d-flex gap-3 flex-wrap h-100">
+                                  <i class="bi bi-pencil-fill fs-4 text-success"></i>
+                                    <i class="bi bi-eye-fill fs-4 text-secondary"></i>
+                                    <i class="bi bi-trash fs-4 text-danger" onClick={()=>deleteHandler(item.applicationNo)}></i>
+                                  </div>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                      </table>
+                    </div>
+                </div>
+                <div className="col-md-6 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Pending Bookings</h1>
+                        <h1 className="fs-6">   {data.filter((item)=>item.paymentStatus=="Pending").length} pending Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                     
+                      <table>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Name</th>
+                            {/* <th>Cadre</th> */}
+                            <th>Service</th>
+                            <th>Action</th>
+                        </tr>
+                          {
+                            data.map((item, index)=>(
+                                item.paymentStatus == "Pending"?(
+                                    <tr>
+                                    {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                    <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                    <td>{item.username}</td>
+                                    {/* <td>{item.officerCadre}</td> */}
+                                    <td>{item.serviceName}</td>
+                                    <td className=''>
+                                   <div className="d-flex gap-2">
+                                   <button className="btn btn-success btn-sm"><i class="bi bi-check-lg"></i></button>
+                                   <button className="btn btn-danger btn-sm"><i class="bi bi-x-lg"></i></button>
+                                   </div>
+                                    </td>
+                                </tr>
+                                ):(null)
+                            ))
+                        }
+                      </table>
+                    </div>
+                </div>
+                <div className="col-md-6 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Confirmed Bookings</h1>
+                        <h1 className="fs-6">   {data.filter((item)=>item.status=="confirmed").length} confirmed Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <hr />
+                     {
+                        data.filter((item)=>item.status == "confirmed").length !=0?(
+                            <table>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Name</th>
+                                {/* <th>Cadre</th> */}
+                                <th>Service</th>
+                                <th>Action</th>
+                            </tr>
+                              {
+                                data.map((item, index)=>(
+                                    item.status == "confirmed"?(
+                                        <tr>
+                                        {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                        <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                        <td>{item.username}</td>
+                                        {/* <td>{item.officerCadre}</td> */}
+                                        <td>{item.serviceName}</td>
+                                        <td className=''>
+                                        <div className="d-flex gap-2 flex-wrap h-100">
+                                            <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i>send SMS</button>
+                                  </div>
+                                        </td>
+                                    </tr>
+                                    ):(null)
+                                ))
+                            }
+                          </table>
+                        )
+                        :(
+                            <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                        )
+                     }
+                    </div>
+                </div>
+                <div className="col-md-6 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Rejected Bookings</h1>
+                        <h1 className="fs-6">   {data.filter((item)=>item.status=="rejected").length} Rejected Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <hr />
+                     {
+                        data.filter((item)=>item.status == "rejected").length !=0?(
+                            <table>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Name</th>
+                                {/* <th>Cadre</th> */}
+                                <th>Service</th>
+                                <th>Action</th>
+                            </tr>
+                              {
+                                data.map((item, index)=>(
+                                    item.status == "rejected"?(
+                                        <tr>
+                                        {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                        <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                        <td>{item.username}</td>
+                                        {/* <td>{item.officerCadre}</td> */}
+                                        <td>{item.serviceName}</td>
+                                        <td className=''>
+                                       <div className="d-flex gap-2">
+                                     
+                                      
+                                       <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
+                                      <TooltipTo title="send reject sms"> <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i></button></TooltipTo>
+                                       </div>
+                                        </td>
+                                    </tr>
+                                    ):(null)
+                                ))
+                            }
+                          </table>
+                        )
+                        :(
+                            <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                        )
+                     }
+                    </div>
+                </div>
+            </div>
+
+           <div className="p-2 py-4">
+           <h1 className="fs-2">Visual Charts</h1>
+           </div>
+           <hr />
+            <Row className='mt-4'>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Monthly Revenue</Card.Title>
+                            <hr />
+                            <br />
                             <Line data={revenueChartData} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={6} className="mb-3">
-                    <Card className="h-100 shadow">
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Monthly Users</Card.Title>
-                            {renderProgress(Object.keys(monthlyUsers).length, 'Users')}
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(monthlyUsers).length, 'Users')} */}
                             <Bar data={generateChartData(monthlyUsers, 'Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(monthlyUsers)}
+                            {/* {renderTable(monthlyUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100 ">
                         <Card.Body>
                             <Card.Title>Pending Users</Card.Title>
-                            {renderProgress(Object.keys(pendingUsers).length, 'Pending Users')}
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(pendingUsers).length, 'Pending Users')} */}
                             <Bar data={generateChartData(pendingUsers, 'Pending Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Rejected Users</Card.Title>
-                            {renderProgress(Object.keys(rejectedUsers).length, 'Rejected Users')}
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(rejectedUsers).length, 'Rejected Users')} */}
                             <Bar data={generateChartData(rejectedUsers, 'Rejected Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Successful Users</Card.Title>
-                            {renderProgress(Object.keys(successfulUsers).length, 'Successful Users')}
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(successfulUsers).length, 'Successful Users')} */}
                             <Bar data={generateChartData(successfulUsers, 'Successful Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks:{ label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Successful Payments</Card.Title>
-                            {renderProgress(Object.keys(successfulPayments).length, 'Successful Payments')}
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(successfulPayments).length, 'Successful Payments')} */}
                             <Bar data={generateChartData(successfulPayments, 'Successful Payments', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Service Types</Card.Title>
+                            <hr />
+                            <br />
                             <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Service Names</Card.Title>
+                            <hr />
+                            <br />
                             <Pie data={generateChartData(serviceNames, 'Service Names', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={4} className="mb-3">
-                    <Card className="h-100 shadow">
+                    <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Sporti</Card.Title>
+                            <hr />
+                            <br />
                             <Pie data={generateChartData(sporti, 'Sporti', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {renderTable(successfulUsers)}
+                            {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
                 </Col>

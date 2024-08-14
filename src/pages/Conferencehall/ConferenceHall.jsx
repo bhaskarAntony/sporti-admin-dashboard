@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import Loading from '../../components/popup/Loading';
 import DOMPurify from 'dompurify';
 import cookies  from 'js-cookie'
+import TooltipTo from '@mui/material/Tooltip';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 function sanitizeInput(input) {
@@ -57,7 +58,7 @@ const ConferenceHall = () => {
     const fetchBookings = async () => {
         const token = cookies.get('token');
         try {
-            const res = await axios.get('https://sporti-backend-live.onrender.com/api/admin', {
+            const res = await axios.get('https://sporti-backend-live.onrender.com/api/sporti/service/bookings', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBookings(res.data);
@@ -139,7 +140,7 @@ const ConferenceHall = () => {
         setShowModal(true);
     };
 
-    const handleDeleteBooking = async (bookingId) => {
+    const handleDeleteBooking = async(bookingId) => {
         setLoading(true);
         try {
             await axios.delete(`https://sporti-services-backend.onrender.com/api/sporti/service/${bookingId}`);
@@ -244,11 +245,22 @@ const ConferenceHall = () => {
         return <Loading />;
     }
 
+    const deleteHandler = (applicationNo) =>{
+
+    }
+
     return (
-        <Container>
-            <Row className="mb-4">
-                <Col>
-                    <Form.Group>
+      <div className="bg-light p-3 p-md-5">
+  <Container fluid className='all-bookings bg-light'>
+    <div className="d-flex align-items-center justify-content-between py-4 p-2">
+        <h1 className="fs-3">Booking details</h1>
+                    <button className="btn btn-outline-secondary btn-sm"  onClick={clearFilters}>Clear Filters</button>
+    </div>
+    <hr />
+    <Row className="mb-4">
+                <Col md={3}>
+                   <div className="card border-0 p-3">
+                   <Form.Group>
                         <Form.Label>Service Type</Form.Label>
                         <Select
                             value={filters.serviceType}
@@ -257,9 +269,11 @@ const ConferenceHall = () => {
                             placeholder="Select Service Type"
                         />
                     </Form.Group>
+                   </div>
                 </Col>
-                <Col>
-                    <Form.Group>
+                <Col md={3}>
+                   <div className="card border-0 p-3">
+                   <Form.Group>
                         <Form.Label>Service Name</Form.Label>
                         <Select
                             value={filters.serviceName}
@@ -268,9 +282,11 @@ const ConferenceHall = () => {
                             placeholder="Select Service Name"
                         />
                     </Form.Group>
+                   </div>
                 </Col>
-                <Col>
-                    <Form.Group>
+                <Col md={3}>
+                   <div className="card p-3 border-0">
+                   <Form.Group>
                         <Form.Label>Check In</Form.Label>
                         <Select
                             value={filters.checkIn}
@@ -279,9 +295,11 @@ const ConferenceHall = () => {
                             placeholder="Select Check In Date"
                         />
                     </Form.Group>
+                   </div>
                 </Col>
-                <Col>
-                    <Form.Group>
+                <Col md={3}>
+                   <div className="card p-3 border-0">
+                   <Form.Group>
                         <Form.Label>Check Out</Form.Label>
                         <Select
                             value={filters.checkOut}
@@ -290,13 +308,172 @@ const ConferenceHall = () => {
                             placeholder="Select Check Out Date"
                         />
                     </Form.Group>
+                   </div>
                 </Col>
-                <Col className="d-flex align-items-end">
-                    <Button variant="secondary" onClick={clearFilters}>Clear Filters</Button>
-                </Col>
+                
             </Row>
+    <div className="row">
+                <div className="col-md-12">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Recent Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                      <table>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Name</th>
+                            <th>Cadre</th>
+                            <th>Service</th>
+                            <th>Action</th>
+                        </tr>
+                          {
+                            filteredBookings.map((item, index)=>(
+                              
+                                
+                                <tr>
+                                    {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                    <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                    <td>{item.username}</td>
+                                    <td>{item.officerCadre}</td>
+                                    <td>{item.serviceName}</td>
+                                    <td className=''>
+                                  <div className="d-flex gap-3 flex-wrap h-100">
+                                  <i class="bi bi-pencil-fill fs-4 text-success" onClick={() => handleUpdateBooking(item)}></i>
+                                    <i class="bi bi-eye-fill fs-4 text-secondary"  onClick={() => handleViewDetails(item)}></i>
+                                    <i class="bi bi-trash fs-4 text-danger" onClick={()=>deleteHandler(item.applicationNo)}></i>
+                                  </div>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                      </table>
+                    </div>
+                </div>
+                <div className="col-md-6 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Pending Bookings</h1>
+                        <h1 className="fs-6">   {bookings.filter((item)=>item.paymentStatus=="Pending").length} pending Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                      <table>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Name</th>
+                            {/* <th>Cadre</th> */}
+                            <th>Service</th>
+                            <th>Action</th>
+                        </tr>
+                          {
+                            bookings.map((item, index)=>(
+                                item.paymentStatus == "Pending"?(
+                                    <tr>
+                                    {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                    <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                    <td>{item.username}</td>
+                                    {/* <td>{item.officerCadre}</td> */}
+                                    <td>{item.serviceName}</td>
+                                    <td className=''>
+                                   <div className="d-flex gap-2">
+                                   <button className="btn btn-success btn-sm"  onClick={() => handleConfirmBooking(item.applicationNo)}><i class="bi bi-check-lg"></i></button>
+                                   <button className="btn btn-danger btn-sm"  onClick={() => handleDeleteBooking(item.applicationNo)}><i class="bi bi-x-lg"></i></button>
+                                   </div>
+                                    </td>
+                                </tr>
+                                ):(null)
+                            ))
+                        }
+                      </table>
+                    </div>
+                </div>
+                <div className="col-md-6 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Confirmed Bookings</h1>
+                        <h1 className="fs-6">   {bookings.filter((item)=>item.status=="confirmed").length} confirmed Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <hr />
+                     {
+                        bookings.filter((item)=>item.status == "confirmed").length !=0?(
+                            <table>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Name</th>
+                                {/* <th>Cadre</th> */}
+                                <th>Service</th>
+                                <th>Action</th>
+                            </tr>
+                              {
+                                bookings.map((item, index)=>(
+                                    item.status == "confirmed"?(
+                                        <tr>
+                                        {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                        <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                        <td>{item.username}</td>
+                                        {/* <td>{item.officerCadre}</td> */}
+                                        <td>{item.serviceName}</td>
+                                        <td className=''>
+                                        <div className="d-flex gap-2 flex-wrap h-100">
+                                            <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i>send SMS</button>
+                                  </div>
+                                        </td>
+                                    </tr>
+                                    ):(null)
+                                ))
+                            }
+                          </table>
+                        )
+                        :(
+                            <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                        )
+                     }
+                    </div>
+                </div>
+                <div className="col-md-6 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Rejected Bookings</h1>
+                        <h1 className="fs-6">   {bookings.filter((item)=>item.status=="rejected").length} Rejected Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <hr />
+                     {
+                        bookings.filter((item)=>item.status == "rejected").length !=0?(
+                            <table>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Name</th>
+                                {/* <th>Cadre</th> */}
+                                <th>Service</th>
+                                <th>Action</th>
+                            </tr>
+                              {
+                                filteredBookings.map((item, index)=>(
+                                    item.status == "rejected"?(
+                                        <tr>
+                                        {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                        <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                        <td>{item.username}</td>
+                                        {/* <td>{item.officerCadre}</td> */}
+                                        <td>{item.serviceName}</td>
+                                        <td className=''>
+                                       <div className="d-flex gap-2">
+                                     
+                                      
+                                       <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
+                                      <TooltipTo title="send reject sms"> <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i></button></TooltipTo>
+                                       </div>
+                                        </td>
+                                    </tr>
+                                    ):(null)
+                                ))
+                            }
+                          </table>
+                        )
+                        :(
+                            <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                        )
+                     }
+                    </div>
+                </div>
+            </div>
+          
 
-            {filteredBookings.map((booking, index) => (
+            {/* {filteredBookings.map((booking, index) => (
                 <Card className="mb-4" key={index}>
                     <Card.Body>
                         <Card.Title>{booking.serviceType}</Card.Title>
@@ -310,12 +487,12 @@ const ConferenceHall = () => {
                         <Button variant="warning" onClick={() => handleUpdateBooking(booking)}>
                              Update
                         </Button>
-                        <Button variant="danger" onClick={() => handleDeleteBooking(booking._id)}>
+                        <Button variant="danger" onClick={() => handleDeleteBooking(booking.applicationNo)}>
                              Delete
                         </Button>
                     </Card.Body>
                 </Card>
-            ))}
+            ))} */}
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -395,34 +572,45 @@ const ConferenceHall = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Row>
-                <Col>
-                    <h3>Monthly Users</h3>
+            <Row className='mt-5'>
+                <Col md={4} className='mb-4'>
+                  <div className="card p-3 border-0 h-100">
+                  <h3>Monthly Users</h3>
                     {renderTable(monthlyUsers)}
-                    <Bar data={generateChartData(monthlyUsers, 'Monthly Users', colors)} />
+                    {/* <Bar data={generateChartData(monthlyUsers, 'Monthly Users', colors)} /> */}
+                  </div>
                 </Col>
-                <Col>
-                    <h3>Service Types</h3>
+                <Col md={4} className='mb-4'>
+                 <div className="card border-0 p-3 h-100">
+                 <h3>Service Types</h3>
                     {renderTable(serviceTypes)}
-                    <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} />
+                    {/* <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} /> */}
+                 </div>
                 </Col>
-                <Col>
-                    <h3>Service Names</h3>
+                <Col md={4} className='mb-4'>
+                  <div className="card p-3 border-0 h-100">
+                  <h3>Service Names</h3>
                     {renderTable(serviceNames)}
-                    <Pie data={generateChartData(serviceNames, 'Service Names', colors)} />
+                    {/* <Pie data={generateChartData(serviceNames, 'Service Names', colors)} /> */}
+                  </div>
                 </Col>
-                <Col>
-                    <h3>Sporti</h3>
+                <Col md={4} className='mb-4'>
+                  <div className="card p-3 border-0 h-100">
+                  <h3>Sporti</h3>
                     {renderTable(sporti)}
-                    <Pie data={generateChartData(sporti, 'Sporti', colors)} />
+                    {/* <Pie data={generateChartData(sporti, 'Sporti', colors)} /> */}
+                  </div>
                 </Col>
-                <Col>
+                <Col md={4} className='mb-4'>
+                    <div className="card p-3 h-100">
                     <h3>Monthly Revenue</h3>
                     {renderTable(monthlyRevenue)}
-                    <Bar data={generateChartData(monthlyRevenue, 'Monthly Revenue', colors)} />
+                    {/* <Bar data={generateChartData(monthlyRevenue, 'Monthly Revenue', colors)} /> */}
+                    </div>
                 </Col>
             </Row>
         </Container>
+      </div>
     );
 };
 
