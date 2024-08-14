@@ -53,8 +53,10 @@ const Dashboard = () => {
    const fetchData = () =>{
     axios.get('https://sporti-backend-live.onrender.com/api/sporti/service/bookings')
     .then(response => {
-        setLoading(false)
+        setLoading(false);
         setData(response.data);
+        console.log(response.data.reverse());
+        
         processChartData(response.data);
     })
     .catch(error => {
@@ -241,7 +243,7 @@ const Dashboard = () => {
         try {
             await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
             fetchData(); // Refresh bookings after rejection
-      setShowModal(false)
+             setShowModal(false)
             setLoading(false);
             toast.warning('Rejected the request');
         } catch (error) {
@@ -297,28 +299,7 @@ const Dashboard = () => {
 
     return (
         <Container fluid className='dashboard p-3 p-md-5'>
-            <Row className="my-4">
-                <Col>
-                    <Select
-                        value={selectedMonth}
-                        onChange={handleMonthChange}
-                        options={months}
-                        placeholder="Select Month"
-                        className='border-1'
-                    />
-                </Col>
-                <Col className="text-end">
-                    <CSVLink
-                        data={filteredData}
-                        headers={headers}
-                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'all'}.csv`}
-                        className="main-btn"
-                    >
-                        <i class="bi bi-download"></i> Download Data
-                    </CSVLink>
-                </Col>
-            </Row>
-            <div className="row">
+              <div className="row">
                 <div className="col-md-3">
                     <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
                         <div className="icon">
@@ -362,12 +343,143 @@ const Dashboard = () => {
                         </div>
                        <div>
                        <h4 className="fs-5">Pending Users</h4>
-                        <h3 className="fs-4">{data.filter((item)=>item.paymentStatus=='Pending').length}</h3>
+                        <h3 className="fs-4">{data.filter((item)=>item.status=='pending').length}</h3>
                         <p className="fs-6 text-secondary">August 07 2024</p>
                        </div>
                     </div>
                 </div>
             </div>
+            <div className="p-2 py-4">
+           <h1 className="fs-2">Visual Charts</h1>
+           </div>
+           <hr />
+            <Row className='mt-4'>
+                {/* <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Monthly Revenue</Card.Title>
+                            <hr />
+                            <br />
+                            <Line data={revenueChartData} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                        </Card.Body>
+                    </Card>
+                </Col> */}
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Monthly Users</Card.Title>
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(monthlyUsers).length, 'Users')} */}
+                            <Bar data={generateChartData(monthlyUsers, 'Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(monthlyUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100 ">
+                        <Card.Body>
+                            <Card.Title>Pending Users</Card.Title>
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(pendingUsers).length, 'Pending Users')} */}
+                            <Bar data={generateChartData(pendingUsers, 'Pending Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Rejected Users</Card.Title>
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(rejectedUsers).length, 'Rejected Users')} */}
+                            <Bar data={generateChartData(rejectedUsers, 'Rejected Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Successful Users</Card.Title>
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(successfulUsers).length, 'Successful Users')} */}
+                            <Bar data={generateChartData(successfulUsers, 'Successful Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks:{ label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Successful Payments</Card.Title>
+                            <hr />
+                            <br />
+                            {/* {renderProgress(Object.keys(successfulPayments).length, 'Successful Payments')} */}
+                            <Bar data={generateChartData(successfulPayments, 'Successful Payments', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Service Types</Card.Title>
+                            <hr />
+                            <br />
+                            <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Service Names</Card.Title>
+                            <hr />
+                            <br />
+                            <Pie data={generateChartData(serviceNames, 'Service Names', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col md={4} className="mb-3">
+                    <Card className="h-100  border-0">
+                        <Card.Body>
+                            <Card.Title>Sporti</Card.Title>
+                            <hr />
+                            <br />
+                            <Pie data={generateChartData(sporti, 'Sporti', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            {/* {renderTable(successfulUsers)} */}
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+            <Row className="my-4">
+                <Col>
+                    <Select
+                        value={selectedMonth}
+                        onChange={handleMonthChange}
+                        options={months}
+                        placeholder="Select Month"
+                        className='border-1'
+                    />
+                </Col>
+                <Col className="text-end">
+                    <CSVLink
+                        data={filteredData}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'all'}.csv`}
+                        className="main-btn"
+                    >
+                        <i class="bi bi-download"></i> Download Data
+                    </CSVLink>
+                </Col>
+            </Row>
+          
             <div className="row">
                 <div className="col-md-12">
                     <div className="all-bookings p-3 p-md-5">
@@ -407,7 +519,7 @@ const Dashboard = () => {
                 <div className="col-md-6 mt-4">
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Pending Bookings</h1>
-                        <h1 className="fs-6">   {data.filter((item)=>item.paymentStatus=="Pending").length} pending Bookings</h1>
+                        <h1 className="fs-6">   {data.filter((item)=>item.status=="pending").length} pending Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
                      
                       <table>
@@ -529,115 +641,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-           <div className="p-2 py-4">
-           <h1 className="fs-2">Visual Charts</h1>
-           </div>
-           <hr />
-            <Row className='mt-4'>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Monthly Revenue</Card.Title>
-                            <hr />
-                            <br />
-                            <Line data={revenueChartData} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Monthly Users</Card.Title>
-                            <hr />
-                            <br />
-                            {/* {renderProgress(Object.keys(monthlyUsers).length, 'Users')} */}
-                            <Bar data={generateChartData(monthlyUsers, 'Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(monthlyUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100 ">
-                        <Card.Body>
-                            <Card.Title>Pending Users</Card.Title>
-                            <hr />
-                            <br />
-                            {/* {renderProgress(Object.keys(pendingUsers).length, 'Pending Users')} */}
-                            <Bar data={generateChartData(pendingUsers, 'Pending Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Rejected Users</Card.Title>
-                            <hr />
-                            <br />
-                            {/* {renderProgress(Object.keys(rejectedUsers).length, 'Rejected Users')} */}
-                            <Bar data={generateChartData(rejectedUsers, 'Rejected Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Successful Users</Card.Title>
-                            <hr />
-                            <br />
-                            {/* {renderProgress(Object.keys(successfulUsers).length, 'Successful Users')} */}
-                            <Bar data={generateChartData(successfulUsers, 'Successful Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks:{ label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Successful Payments</Card.Title>
-                            <hr />
-                            <br />
-                            {/* {renderProgress(Object.keys(successfulPayments).length, 'Successful Payments')} */}
-                            <Bar data={generateChartData(successfulPayments, 'Successful Payments', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Service Types</Card.Title>
-                            <hr />
-                            <br />
-                            <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Service Names</Card.Title>
-                            <hr />
-                            <br />
-                            <Pie data={generateChartData(serviceNames, 'Service Names', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col md={4} className="mb-3">
-                    <Card className="h-100  border-0">
-                        <Card.Body>
-                            <Card.Title>Sporti</Card.Title>
-                            <hr />
-                            <br />
-                            <Pie data={generateChartData(sporti, 'Sporti', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
+           
 
             <Modal show={showModal} onHide={()=>setShowModal(false)}>
                 <Modal.Header closeButton>
