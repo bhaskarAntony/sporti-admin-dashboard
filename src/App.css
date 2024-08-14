@@ -4,6 +4,9 @@
     --secondary: #fc6838;
     --light-color:#f9fafd;
 }
+*{
+  text-transform: capitalize !important;
+}
 .app{
     max-height: 100vh !important;
     overflow: hidden;
