@@ -317,7 +317,7 @@ const ConferenceHall = () => {
                 </Col>
                 
             </Row>
-    <div className="row">
+    <div className="row" style={{marginTop:'230px'}}>
                 <div className="col-md-12">
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Recent Bookings</h1>

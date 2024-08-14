@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Pie, Line } from 'react-chartjs-2';
-import { Container, Row, Col, Card, Table, Button, ProgressBar, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Button, ProgressBar, Modal, Form } from 'react-bootstrap';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import { CSVLink } from 'react-csv';
@@ -44,23 +44,25 @@ const Dashboard = () => {
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
     const [bookings, setBookings] = useState([]);
     const [role, setRole] = useState('');
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [showModal, setShowModal] = useState(false);
     const [viewDetails, setViewDetails] = useState(null)
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [rejectionReason, setRejectionReason] = useState('');
 
-    useEffect(() => {
-        const token = cookies.get('token');
-        axios.get('https://sporti-backend-live.onrender.com/api/sporti/service/bookings', {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(response => {
-                setData(response.data);
-                processChartData(response.data);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the data!', error);
-            });
-    }, []);
+   const fetchData = () =>{
+    axios.get('https://sporti-backend-live.onrender.com/api/sporti/service/bookings')
+    .then(response => {
+        setLoading(false)
+        setData(response.data);
+        processChartData(response.data);
+    })
+    .catch(error => {
+        setLoading(false)
+        console.error('There was an error fetching the data!', error);
+    });
+   }
+   fetchData()
 
     const processChartData = (data) => {
         const monthlyUsersData = {};
@@ -203,7 +205,7 @@ const Dashboard = () => {
         .then((res)=>{
             setLoading(false)
             toast.success('booking deleted');
-            window.location.reload();
+            fetchData()
         })
         .catch((err)=>{
             setLoading(false)
@@ -225,6 +227,8 @@ const Dashboard = () => {
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
+            // window.location.reload();
+            fetchData();
         } catch (error) {
             setLoading(false);
             toast.success('Accepted the request');
@@ -232,24 +236,25 @@ const Dashboard = () => {
         }
     };
 
-    // const handleRejectBooking = async () => {
-    //     setLoading(true);
-    //     try {
-    //         await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
-    //         fetchBookings(); // Refresh bookings after rejection
-    //         handleCloseModal();
-    //         setLoading(false);
-    //         toast.warning('Rejected the request');
-    //     } catch (error) {
-    //         setLoading(false);
-    //         toast.error('Error', error.message);
-    //         console.error('Error:', error);
-    //     }
-    // };
+    const handleRejectBooking = async () => {
+        setLoading(true);
+        try {
+            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+            fetchData(); // Refresh bookings after rejection
+      setShowModal(false)
+            setLoading(false);
+            toast.warning('Rejected the request');
+        } catch (error) {
+            setLoading(false);
+            toast.error('Error', error.message);
+            console.error('Error:', error);
+        }
+    };
 
-    // const handleShowModal = () =>{
-    //     const [selectedBooking, setSelectedBooking] = useState(null);
-    // }
+    const handleShowModal = (booking) => {
+        setSelectedBooking(booking);
+        setShowModal(true);
+    };
 
     const sendSMS = (message, number) => {
         const url = 'https://www.fast2sms.com/dev/bulkV2'; 
@@ -322,7 +327,7 @@ const Dashboard = () => {
                        <div>
                        <h4 className="fs-5">Monthly Revenue</h4>
                         <h3 className="fs-4">&#8377; {totalRevenue}/-</h3>
-                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                        <p className="fs-6 text-secondary">August 07 2024</p>
                        </div>
                     </div>
                 </div>
@@ -334,7 +339,7 @@ const Dashboard = () => {
                        <div>
                        <h4 className="fs-5">Total unique users</h4>
                         <h3 className="fs-4">{data.length}</h3>
-                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                        <p className="fs-6 text-secondary">August 07 2024</p>
                        </div>
                     </div>
                 </div>
@@ -344,9 +349,9 @@ const Dashboard = () => {
                         <i class="bi bi-ui-checks-grid"></i>
                         </div>
                        <div>
-                       <h4 className="fs-5">Montly Bookings</h4>
+                       <h4 className="fs-5">Monthly Bookings</h4>
                         <h3 className="fs-4">20+</h3>
-                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                        <p className="fs-6 text-secondary">August 07 2024</p>
                        </div>
                     </div>
                 </div>
@@ -358,7 +363,7 @@ const Dashboard = () => {
                        <div>
                        <h4 className="fs-5">Pending Users</h4>
                         <h3 className="fs-4">{data.filter((item)=>item.paymentStatus=='Pending').length}</h3>
-                        <p className="fs-6 text-secondary">Agust 07 2024</p>
+                        <p className="fs-6 text-secondary">August 07 2024</p>
                        </div>
                     </div>
                 </div>
@@ -415,7 +420,7 @@ const Dashboard = () => {
                         </tr>
                           {
                             data.map((item, index)=>(
-                                item.paymentStatus == "Pending"?(
+                                item.status == "pending"?(
                                     <tr>
                                     {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
                                     <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
@@ -425,7 +430,7 @@ const Dashboard = () => {
                                     <td className=''>
                                    <div className="d-flex gap-2">
                                    <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button>
-                                   {/* <button className="btn btn-danger btn-sm" onClick={() => handleShowModal(booking)}><i class="bi bi-x-lg"></i></button> */}
+                                   <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
                                    </div>
                                     </td>
                                 </tr>
@@ -647,21 +652,20 @@ const Dashboard = () => {
                             <p><strong>Total Cost:</strong> {viewDetails.totalCost}</p>
                         </div>
                     ) : (
-                        // <Form.Group>
-                        //     <Form.Label>Rejection Reason</Form.Label>
-                        //     <Form.Control
-                        //         as="textarea"
-                        //         rows={3}
-                        //         value={rejectionReason}
-                        //         onChange={(e) => setRejectionReason(e.target.value)}
-                        //     />
-                        // </Form.Group>
-                        null
+                        <Form.Group>
+                            <Form.Label>Rejection Reason</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={rejectionReason}
+                                onChange={(e) => setRejectionReason(e.target.value)}
+                            />
+                        </Form.Group>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={()=>setShowModal(false)}>Close</Button>
-                    {/* {!viewDetails && <Button variant="primary" onClick={handleRejectBooking}>Reject</Button>} */}
+                    {!viewDetails && <Button variant="primary" onClick={handleRejectBooking}>Reject</Button>}
                 </Modal.Footer>
             </Modal>
         </Container>
