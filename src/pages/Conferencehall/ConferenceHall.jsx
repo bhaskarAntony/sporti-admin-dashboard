@@ -328,7 +328,7 @@ const ConferenceHall = () => {
                             <th>Name</th>
                             <th>Cadre</th>
                             <th>Service</th>
-                            <th>Action</th>
+                            {/* <th>Action</th> */}
                         </tr>
                           {
                             filteredBookings.map((item, index)=>(
@@ -340,13 +340,13 @@ const ConferenceHall = () => {
                                     <td>{item.username}</td>
                                     <td>{item.officerCadre}</td>
                                     <td>{item.serviceName}</td>
-                                    <td className=''>
+                                    {/* <td className=''>
                                   <div className="d-flex gap-3 flex-wrap h-100">
                                   <i class="bi bi-pencil-fill fs-4 text-success" onClick={() => handleUpdateBooking(item)}></i>
                                     <i class="bi bi-eye-fill fs-4 text-secondary"  onClick={() => handleViewDetails(item)}></i>
                                     <i class="bi bi-trash fs-4 text-danger" onClick={()=>deleteHandler(item.applicationNo)}></i>
                                   </div>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             ))
                         }
@@ -364,7 +364,7 @@ const ConferenceHall = () => {
                             <th>Name</th>
                             {/* <th>Cadre</th> */}
                             <th>Service</th>
-                            <th>Action</th>
+                            {/* <th>Action</th> */}
                         </tr>
                           {
                             bookings.map((item, index)=>(
@@ -375,12 +375,12 @@ const ConferenceHall = () => {
                                     <td>{item.username}</td>
                                     {/* <td>{item.officerCadre}</td> */}
                                     <td>{item.serviceName}</td>
-                                    <td className=''>
+                                    {/* <td className=''>
                                    <div className="d-flex gap-2">
                                    <button className="btn btn-success btn-sm"  onClick={() => handleConfirmBooking(item.applicationNo)}><i class="bi bi-check-lg"></i></button>
                                    <button className="btn btn-danger btn-sm"  onClick={() => handleDeleteBooking(item.applicationNo)}><i class="bi bi-x-lg"></i></button>
                                    </div>
-                                    </td>
+                                    </td> */}
                                 </tr>
                                 ):(null)
                             ))
@@ -402,7 +402,7 @@ const ConferenceHall = () => {
                                 <th>Name</th>
                                 {/* <th>Cadre</th> */}
                                 <th>Service</th>
-                                <th>Action</th>
+                                {/* <th>Action</th> */}
                             </tr>
                               {
                                 bookings.map((item, index)=>(
@@ -413,11 +413,11 @@ const ConferenceHall = () => {
                                         <td>{item.username}</td>
                                         {/* <td>{item.officerCadre}</td> */}
                                         <td>{item.serviceName}</td>
-                                        <td className=''>
+                                        {/* <td className=''>
                                         <div className="d-flex gap-2 flex-wrap h-100">
                                             <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i>send SMS</button>
                                   </div>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                     ):(null)
                                 ))
@@ -444,7 +444,7 @@ const ConferenceHall = () => {
                                 <th>Name</th>
                                 {/* <th>Cadre</th> */}
                                 <th>Service</th>
-                                <th>Action</th>
+                                {/* <th>Action</th> */}
                             </tr>
                               {
                                 filteredBookings.map((item, index)=>(
@@ -455,14 +455,14 @@ const ConferenceHall = () => {
                                         <td>{item.username}</td>
                                         {/* <td>{item.officerCadre}</td> */}
                                         <td>{item.serviceName}</td>
-                                        <td className=''>
+                                        {/* <td className=''>
                                        <div className="d-flex gap-2">
                                      
                                       
                                        <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
                                       <TooltipTo title="send reject sms"> <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i></button></TooltipTo>
                                        </div>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                     ):(null)
                                 ))
