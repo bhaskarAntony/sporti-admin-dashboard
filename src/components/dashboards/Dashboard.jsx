@@ -225,7 +225,7 @@ const Dashboard = () => {
     const handleConfirmBooking = async (bookingId) => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            await axios.patch(`https://sporti-backend-live.onrender.com/api/sporti/service/${bookingId}/confirm`);
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
@@ -241,7 +241,7 @@ const Dashboard = () => {
     const handleRejectBooking = async () => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+            await axios.patch(`https://sporti-backend-live.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
             fetchData(); // Refresh bookings after rejection
              setShowModal(false)
             setLoading(false);
