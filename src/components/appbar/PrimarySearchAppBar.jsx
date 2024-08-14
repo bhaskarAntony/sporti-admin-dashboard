@@ -157,9 +157,9 @@ export default function PrimarySearchAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{background:"#1A3636"}}>
+      <AppBar position="static" style={{background:"#313552"}}>
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             size="large"
             edge="start"
             color="inherit"
@@ -167,7 +167,7 @@ export default function PrimarySearchAppBar() {
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography
             variant="h6"
             noWrap
@@ -201,14 +201,14 @@ export default function PrimarySearchAppBar() {
          >
            <Link to="/bookings" className='fs-6 nav-link text-light mx-3'>Bookings</Link>
          </Typography>
-         <Typography
+         {/* <Typography
            
            noWrap
            component="div"
            sx={{ display: { xs: 'none', sm: 'block' } }}
          >
            <Link to="/bookings" className='fs-6 nav-link text-light mx-3'>Feedbacks</Link>
-         </Typography>
+         </Typography> */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">

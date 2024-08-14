@@ -252,9 +252,14 @@ const ConferenceHall = () => {
     return (
       <div className="bg-light p-3 p-md-5">
   <Container fluid className='all-bookings bg-light'>
+  
     <div className="d-flex align-items-center justify-content-between py-4 p-2">
         <h1 className="fs-3">Booking details</h1>
-                    <button className="btn btn-outline-secondary btn-sm"  onClick={clearFilters}>Clear Filters</button>
+      <div className="d-flex align-items-center gap-3 py-1">
+      <button onClick={openServiceModal} className='main-btn fs-6'>Add New Room Booking</button>
+      <button onClick={openServiceModal} className='main-btn fs-6'>Add New Booking</button>
+      <button className="btn btn-outline-secondary"  onClick={clearFilters}>Clear Filters</button>
+      </div>
     </div>
     <hr />
     <Row className="mb-4">
@@ -494,35 +499,7 @@ const ConferenceHall = () => {
                 </Card>
             ))} */}
 
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{viewDetails ? 'Booking Details' : 'Reject Booking'}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {viewDetails ? (
-                        <div>
-                            <p><strong>Service Type:</strong> {viewDetails.serviceType}</p>
-                            <p><strong>Service Name:</strong> {viewDetails.serviceName}</p>
-                            <p><strong>Date:</strong> {new Date(viewDetails.eventdate).toLocaleDateString()}</p>
-                            <p><strong>Total Cost:</strong> {viewDetails.totalCost}</p>
-                        </div>
-                    ) : (
-                        <Form.Group>
-                            <Form.Label>Rejection Reason</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={rejectionReason}
-                                onChange={(e) => setRejectionReason(e.target.value)}
-                            />
-                        </Form.Group>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-                    {!viewDetails && <Button variant="primary" onClick={handleRejectBooking}>Reject</Button>}
-                </Modal.Footer>
-            </Modal>
+         
 
             <Modal show={editModal} onHide={() => setEditModal(false)}>
                 <Modal.Header closeButton>
@@ -571,6 +548,19 @@ const ConferenceHall = () => {
                     <Button variant="primary" onClick={handleEditSubmit}>Save changes</Button>
                 </Modal.Footer>
             </Modal>
+            <Modal show={serviceBook} onHide={closeServiceModal} size='lg'>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Booking</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <MainFunctionHallBooking/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setEditModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={handleEditSubmit}>Save changes</Button>
+                </Modal.Footer>
+            </Modal>
+
 
             <Row className='mt-5'>
                 <Col md={4} className='mb-4'>

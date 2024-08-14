@@ -131,3 +131,11 @@ th, .navbar{
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .form-control{
+
+  }
+  .form-control:focus{
+    box-shadow: none !important;
+    border: none !important;
+    border: 1px solid #ccc !important;
+  }

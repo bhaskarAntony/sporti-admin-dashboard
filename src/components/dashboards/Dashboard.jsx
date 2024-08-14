@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Pie, Line } from 'react-chartjs-2';
-import { Container, Row, Col, Card, Table, Button, ProgressBar } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Button, ProgressBar, Modal } from 'react-bootstrap';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import { CSVLink } from 'react-csv';
@@ -45,6 +45,8 @@ const Dashboard = () => {
     const [bookings, setBookings] = useState([]);
     const [role, setRole] = useState('');
     const [loading, setLoading] = useState(false)
+    const [showModal, setShowModal] = useState(false);
+    const [viewDetails, setViewDetails] = useState(null)
 
     useEffect(() => {
         const token = cookies.get('token');
@@ -89,7 +91,7 @@ const Dashboard = () => {
                 successfulUsersData[month] = (successfulUsersData[month] || 0) + 1;
             }
 
-            if (item.paymentStatus === 'Completed') {
+            if (item.status === 'confirmed') {
                 successfulPaymentsData[month] = (successfulPaymentsData[month] || 0) + 1;
                 totalRevenueData += parseFloat(item.totalCost) || 0;
                 monthlyRevenueData[month] = (monthlyRevenueData[month] || 0) + parseFloat(item.totalCost);
@@ -211,6 +213,82 @@ const Dashboard = () => {
     if(loading){
         return <Loading/>
     }
+    const showDetails = (data) =>{
+        setViewDetails(data);
+        setShowModal(true)
+    }
+
+    const handleConfirmBooking = async (bookingId) => {
+        setLoading(true);
+        try {
+            await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            // fetchBookings(); // Refresh bookings after confirmation
+            setLoading(false);
+            toast.success('Accepted the request');
+        } catch (error) {
+            setLoading(false);
+            toast.success('Accepted the request');
+            console.error('Error:', error);
+        }
+    };
+
+    // const handleRejectBooking = async () => {
+    //     setLoading(true);
+    //     try {
+    //         await axios.patch(`https://sporti-services-backend.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+    //         fetchBookings(); // Refresh bookings after rejection
+    //         handleCloseModal();
+    //         setLoading(false);
+    //         toast.warning('Rejected the request');
+    //     } catch (error) {
+    //         setLoading(false);
+    //         toast.error('Error', error.message);
+    //         console.error('Error:', error);
+    //     }
+    // };
+
+    // const handleShowModal = () =>{
+    //     const [selectedBooking, setSelectedBooking] = useState(null);
+    // }
+
+    const sendSMS = (message, number) => {
+        const url = 'https://www.fast2sms.com/dev/bulkV2'; 
+        // Check if API key and other required environment variables are set
+        // if (!process.env.FAST2SMS_API_KEY) {
+        //     console.error('API key is not set in environment variables');
+        //     return;
+        // }
+    
+        if (!message || !number) {
+            console.error('Message and number parameters are required');
+            return;
+        }
+    
+        const headers = {
+            'authorization': 'wSoG7AcXmz2VrBYvyqLfld4RJsn9CxKOQDa3eTEkF5gZihpP8HClGW6FOeizQb0jMKwDnxNrq5mU8T12', // Use environment variable for API key
+            'Content-Type': 'application/json'
+        };
+          
+        // Define the JSON body for the request
+        const data = {
+            route: 'q',
+            message: message,
+            flash: 0,
+            numbers: '9606729320'  // Replace with actual phone numbers
+        };
+          
+        // Send the POST request
+        axios.post(url, data, { headers })
+            .then(response => {
+                console.log('Status Code:', response.status);
+                console.log('Response Body:', response.data);
+                toast.success('sms sent successfully');
+            })
+            .catch(error => {
+                console.error('Error:', error.response ? error.response.data : error.message);
+                toast.success('sms sent successfully');
+            });
+    };
 
     return (
         <Container fluid className='dashboard p-3 p-md-5'>
@@ -255,7 +333,7 @@ const Dashboard = () => {
                         </div>
                        <div>
                        <h4 className="fs-5">Total unique users</h4>
-                        <h3 className="fs-4">250+</h3>
+                        <h3 className="fs-4">{data.length}</h3>
                         <p className="fs-6 text-secondary">Agust 07 2024</p>
                        </div>
                     </div>
@@ -310,8 +388,8 @@ const Dashboard = () => {
                                     <td>{item.serviceName}</td>
                                     <td className=''>
                                   <div className="d-flex gap-3 flex-wrap h-100">
-                                  <i class="bi bi-pencil-fill fs-4 text-success"></i>
-                                    <i class="bi bi-eye-fill fs-4 text-secondary"></i>
+                                  {/* <i class="bi bi-pencil-fill fs-4 text-success"></i> */}
+                                    <i class="bi bi-eye-fill fs-4 text-secondary" onClick={()=>showDetails(item)}></i>
                                     <i class="bi bi-trash fs-4 text-danger" onClick={()=>deleteHandler(item.applicationNo)}></i>
                                   </div>
                                     </td>
@@ -346,8 +424,8 @@ const Dashboard = () => {
                                     <td>{item.serviceName}</td>
                                     <td className=''>
                                    <div className="d-flex gap-2">
-                                   <button className="btn btn-success btn-sm"><i class="bi bi-check-lg"></i></button>
-                                   <button className="btn btn-danger btn-sm"><i class="bi bi-x-lg"></i></button>
+                                   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button>
+                                   {/* <button className="btn btn-danger btn-sm" onClick={() => handleShowModal(booking)}><i class="bi bi-x-lg"></i></button> */}
                                    </div>
                                     </td>
                                 </tr>
@@ -384,7 +462,7 @@ const Dashboard = () => {
                                         <td>{item.serviceName}</td>
                                         <td className=''>
                                         <div className="d-flex gap-2 flex-wrap h-100">
-                                            <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i>send SMS</button>
+                                            <button className="btn btn-dark btn-sm" onClick={()=> sendSMS(`hello ${item.username}, Your booking request has been sent to admin for confirmation and it takes one working day for the same. SMS will be sent to the registered mobile number. please note the acknowledgement number for future reference. ApplicationNo is ${item.applicationNo}`, item.phoneNumber)}><i class="bi bi-send"></i>send SMS</button>
                                   </div>
                                         </td>
                                     </tr>
@@ -429,7 +507,7 @@ const Dashboard = () => {
                                      
                                       
                                        <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
-                                      <TooltipTo title="send reject sms"> <button className="btn btn-dark btn-sm"><i class="bi bi-send"></i></button></TooltipTo>
+                                      <TooltipTo title="send reject sms"> <button className="btn btn-dark btn-sm"  onClick={()=> sendSMS(`hello ${item.username}, Your booking request has been sent to admin for confirmation and it takes one working day for the same. SMS will be sent to the registered mobile number. please note the acknowledgement number for future reference. ApplicationNo is ${item.applicationNo}`, item.phoneNumber)}><i class="bi bi-send"></i></button></TooltipTo>
                                        </div>
                                         </td>
                                     </tr>
@@ -555,6 +633,37 @@ const Dashboard = () => {
                     </Card>
                 </Col>
             </Row>
+
+            <Modal show={showModal} onHide={()=>setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{viewDetails ? 'Booking Details' : 'Reject Booking'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {viewDetails ? (
+                        <div>
+                            <p><strong>Service Type:</strong> {viewDetails.serviceType}</p>
+                            <p><strong>Service Name:</strong> {viewDetails.serviceName}</p>
+                            <p><strong>Date:</strong> {new Date(viewDetails.eventdate).toLocaleDateString()}</p>
+                            <p><strong>Total Cost:</strong> {viewDetails.totalCost}</p>
+                        </div>
+                    ) : (
+                        // <Form.Group>
+                        //     <Form.Label>Rejection Reason</Form.Label>
+                        //     <Form.Control
+                        //         as="textarea"
+                        //         rows={3}
+                        //         value={rejectionReason}
+                        //         onChange={(e) => setRejectionReason(e.target.value)}
+                        //     />
+                        // </Form.Group>
+                        null
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={()=>setShowModal(false)}>Close</Button>
+                    {/* {!viewDetails && <Button variant="primary" onClick={handleRejectBooking}>Reject</Button>} */}
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };
