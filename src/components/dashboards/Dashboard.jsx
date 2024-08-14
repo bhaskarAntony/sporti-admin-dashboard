@@ -51,7 +51,7 @@ const Dashboard = () => {
     const [rejectionReason, setRejectionReason] = useState('');
 
    const fetchData = () =>{
-    axios.get('https://sporti-backend-live.onrender.com/api/sporti/service/bookings')
+    axios.get('https://sporti-backend-live-1.onrender.com/api/sporti/service/bookings')
     .then(response => {
         setLoading(false);
         setData(response.data);
@@ -203,7 +203,7 @@ const Dashboard = () => {
 
     const deleteHandler = (applicationNO) =>{
         setLoading(true)
-        axios.delete(`https://sporti-backend-live.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
+        axios.delete(`https://sporti-backend-live-1.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
         .then((res)=>{
             setLoading(false)
             toast.success('booking deleted');
@@ -225,7 +225,7 @@ const Dashboard = () => {
     const handleConfirmBooking = async (bookingId) => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${bookingId}/confirm`);
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
@@ -241,7 +241,7 @@ const Dashboard = () => {
     const handleRejectBooking = async () => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
             fetchData(); // Refresh bookings after rejection
              setShowModal(false)
             setLoading(false);
