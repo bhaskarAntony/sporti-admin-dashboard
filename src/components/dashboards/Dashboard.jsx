@@ -330,8 +330,8 @@ const Dashboard = () => {
                         <i class="bi bi-ui-checks-grid"></i>
                         </div>
                        <div>
-                       <h4 className="fs-5">Monthly Bookings</h4>
-                        <h3 className="fs-4">20+</h3>
+                       <h4 className="fs-5">Confirmed Bookings</h4>
+                        <h3 className="fs-4">{data.filter((item)=>item.status =="confirmed").length}</h3>
                         <p className="fs-6 text-secondary">August 07 2024</p>
                        </div>
                     </div>
@@ -506,8 +506,12 @@ const Dashboard = () => {
                                     <td className=''>
                                   <div className="d-flex gap-3 flex-wrap h-100">
                                   {/* <i class="bi bi-pencil-fill fs-4 text-success"></i> */}
-                                    <i class="bi bi-eye-fill fs-4 text-secondary" onClick={()=>showDetails(item)}></i>
-                                    <i class="bi bi-trash fs-4 text-danger" onClick={()=>deleteHandler(item.applicationNo)}></i>
+                                 <TooltipTo title="view booking">
+                                 <button className="btn btn-dark btn sm" onClick={()=>showDetails(item)}>
+                                  <i class="bi bi-eye-fill" ></i>
+                                  </button>
+                                 </TooltipTo>
+                                   <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}> <i class="bi bi-trash" ></i></button>
                                   </div>
                                     </td>
                                 </tr>
@@ -520,7 +524,7 @@ const Dashboard = () => {
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Pending Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="pending").length} pending Bookings</h1>
-                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <p className="fs-6 text-secondary">Here you can find all Pending bookings</p>
                      
                       <table>
                         <tr>
@@ -541,8 +545,12 @@ const Dashboard = () => {
                                     <td>{item.serviceName}</td>
                                     <td className=''>
                                    <div className="d-flex gap-2">
-                                   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button>
+                                  <TooltipTo title="confirm booking">
+                                  <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button>
+                                  </TooltipTo>
+                                   <TooltipTo title="reject booking">
                                    <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                   </TooltipTo>
                                    </div>
                                     </td>
                                 </tr>
@@ -556,7 +564,7 @@ const Dashboard = () => {
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Confirmed Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="confirmed").length} confirmed Bookings</h1>
-                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <p className="fs-6 text-secondary">Here you can find all Confirmed bookings</p>
                         <hr />
                      {
                         data.filter((item)=>item.status == "confirmed").length !=0?(
@@ -579,7 +587,8 @@ const Dashboard = () => {
                                         <td>{item.serviceName}</td>
                                         <td className=''>
                                         <div className="d-flex gap-2 flex-wrap h-100">
-                                            <button className="btn btn-dark btn-sm" onClick={()=> sendSMS(`hello ${item.username}, Your booking request has been sent to admin for confirmation and it takes one working day for the same. SMS will be sent to the registered mobile number. please note the acknowledgement number for future reference. ApplicationNo is ${item.applicationNo}`, item.phoneNumber)}><i class="bi bi-send"></i>send SMS</button>
+                                        <TooltipTo title="send reject booking">    <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button></TooltipTo>
+                                        <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
                                   </div>
                                         </td>
                                     </tr>
@@ -598,7 +607,7 @@ const Dashboard = () => {
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Rejected Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="rejected").length} Rejected Bookings</h1>
-                        <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+                        <p className="fs-6 text-secondary">Here you can find all Rejected bookings</p>
                         <hr />
                      {
                         data.filter((item)=>item.status == "rejected").length !=0?(
@@ -623,8 +632,9 @@ const Dashboard = () => {
                                        <div className="d-flex gap-2">
                                      
                                       
-                                       <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
-                                      <TooltipTo title="send reject sms"> <button className="btn btn-dark btn-sm"  onClick={()=> sendSMS(`hello ${item.username}, Your booking request has been sent to admin for confirmation and it takes one working day for the same. SMS will be sent to the registered mobile number. please note the acknowledgement number for future reference. ApplicationNo is ${item.applicationNo}`, item.phoneNumber)}><i class="bi bi-send"></i></button></TooltipTo>
+                                     
+                                      <TooltipTo title="send reject sms">   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button></TooltipTo>
+                                      <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
                                        </div>
                                         </td>
                                     </tr>
