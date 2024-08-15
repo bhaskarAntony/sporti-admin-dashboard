@@ -367,7 +367,7 @@ const Dashboard = () => {
                 <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
-                            <Card.Title>Monthly Users</Card.Title>
+                            <Card.Title>Monthly Bookings</Card.Title>
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(monthlyUsers).length, 'Users')} */}
@@ -379,7 +379,7 @@ const Dashboard = () => {
                 <Col md={4} className="mb-3">
                     <Card className="h-100 ">
                         <Card.Body>
-                            <Card.Title>Pending Users</Card.Title>
+                            <Card.Title>Pending Bookings</Card.Title>
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(pendingUsers).length, 'Pending Users')} */}
@@ -391,7 +391,7 @@ const Dashboard = () => {
                 <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
-                            <Card.Title>Rejected Users</Card.Title>
+                            <Card.Title>Rejected Bookings</Card.Title>
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(rejectedUsers).length, 'Rejected Users')} */}
@@ -403,7 +403,7 @@ const Dashboard = () => {
                 <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
-                            <Card.Title>Successful Users</Card.Title>
+                            <Card.Title>Successful Payments</Card.Title>
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(successfulUsers).length, 'Successful Users')} */}
@@ -415,7 +415,7 @@ const Dashboard = () => {
                 <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
-                            <Card.Title>Successful Payments</Card.Title>
+                            <Card.Title>Confirmed Bookings</Card.Title>
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(successfulPayments).length, 'Successful Payments')} */}
@@ -424,17 +424,17 @@ const Dashboard = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={4} className="mb-3">
+                {/* <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Service Types</Card.Title>
                             <hr />
                             <br />
                             <Pie data={generateChartData(serviceTypes, 'Service Types', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
+                            {renderTable(successfulUsers)}
                         </Card.Body>
                     </Card>
-                </Col>
+                </Col> */}
                 <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
@@ -446,20 +446,21 @@ const Dashboard = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={4} className="mb-3">
+                {/* <Col md={4} className="mb-3">
                     <Card className="h-100  border-0">
                         <Card.Body>
                             <Card.Title>Sporti</Card.Title>
                             <hr />
                             <br />
                             <Pie data={generateChartData(sporti, 'Sporti', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
-                            {/* {renderTable(successfulUsers)} */}
+                            {renderTable(successfulUsers)}
                         </Card.Body>
                     </Card>
-                </Col>
+                </Col> */}
             </Row>
+            <hr />
             <Row className="my-4">
-                <Col>
+                {/* <Col>
                     <Select
                         value={selectedMonth}
                         onChange={handleMonthChange}
@@ -467,7 +468,7 @@ const Dashboard = () => {
                         placeholder="Select Month"
                         className='border-1'
                     />
-                </Col>
+                </Col> */}
                 <Col className="text-end">
                     <CSVLink
                         data={filteredData}
