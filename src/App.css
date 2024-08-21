@@ -30,6 +30,16 @@
     color: #424242;
     font-weight: bold;
 }
+.bg-main{
+  background-color: #313552 !important;
+}
+.btn-main{
+  background-color: #313552;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
 .btn-close{
     --bs-btn-close-bg:url(https://cdn-icons-png.flaticon.com/128/8791/8791943.png?ga=GA1.1.874872603.1694171926&track=ais) !important;
 }
@@ -141,4 +151,10 @@ th, .navbar{
     box-shadow: none !important;
     border: none !important;
     border: 1px solid #ccc !important;
+  }
+  .logo{
+    width: 50px;
+    background-color: #fff;
+    margin-right: 10px;
+    border-radius: 100px;
   }

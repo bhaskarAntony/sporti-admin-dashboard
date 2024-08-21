@@ -14,6 +14,11 @@ import { useAuth } from './components/privateRoutes/AuthContext';
 import Security from './components/security/Security';
 import Dashboard from './components/dashboards/Dashboard';
 import PrimarySearchAppBar from './components/appbar/PrimarySearchAppBar';
+import MainFunctionHallBooking from './components/Bookings/ServiceBook';
+import ConfirmService from './components/Bookings/ConfirmService';
+import MainRoomBook from './components/Bookings/RoomBooking';
+import ConfirmRoom from './components/Bookings/ConfirmRoom';
+import DetailsView from './pages/view/DetailsView';
 
 
 
@@ -38,6 +43,11 @@ function App() {
      </Route>
      <Route path='/' element={<Dashboard/>}/>
       <Route path='/bookings' element={<ConferenceHall/>}/>
+      <Route path='/new/service' element={<MainFunctionHallBooking/>}/>
+      <Route path='/confirm/service' element={<ConfirmService/>}/>
+      <Route path='/new/room/booking' element={<MainRoomBook/>}/>
+      <Route path='/confirm/room/details' element={<ConfirmRoom/>}/>
+      <Route path='/view/details' element={<DetailsView/>}/>
     </Routes>
    </div>
     </div>

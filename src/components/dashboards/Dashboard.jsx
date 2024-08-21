@@ -11,6 +11,7 @@ import { Avatar } from '@mui/material';
 import { toast } from 'react-toastify';
 import Loading from '../popup/Loading';
 import TooltipTo from '@mui/material/Tooltip';
+import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -49,9 +50,10 @@ const Dashboard = () => {
     const [viewDetails, setViewDetails] = useState(null)
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [rejectionReason, setRejectionReason] = useState('');
+    const navigate = useNavigate();
 
    const fetchData = () =>{
-    axios.get('https://sporti-backend-live-1.onrender.com/api/sporti/service/bookings')
+    axios.get('https://sporti-backend-live-2.onrender.com/api/sporti/service/bookings')
     .then(response => {
         setLoading(false);
         setData(response.data);
@@ -127,6 +129,8 @@ const Dashboard = () => {
         const month = selectedMonth.value;
         return data.filter(item => new Date(item.eventdate).getMonth() + 1 === month);
     };
+    const xAxisLabel = 'Months';
+const yAxisLabel = 'Sales in Units';
 
     const generateChartData = (data, label, colors) => ({
         labels: Object.keys(data),
@@ -138,9 +142,30 @@ const Dashboard = () => {
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
             },
+            
         ],
     });
 
+    const generateChartOptions = (xAxisLabel, yAxisLabel) => ({
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: xAxisLabel,
+                },
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: yAxisLabel,
+                },
+            },
+        },
+    });
+
+    const chartOptions = generateChartOptions(xAxisLabel, yAxisLabel);
     const revenueChartData = {
         labels: Object.keys(monthlyRevenue),
         datasets: [
@@ -155,6 +180,8 @@ const Dashboard = () => {
     };
 
     const colors = ['#36BA98', '#F19ED2', '#3AA6B9', '#F2C18D', '#9966FF', '#FF9F40', '#E7E9ED', '#36A2EB'];
+
+   
 
     const filteredData = filterDataByMonth(data);
     const headers = [
@@ -203,7 +230,7 @@ const Dashboard = () => {
 
     const deleteHandler = (applicationNO) =>{
         setLoading(true)
-        axios.delete(`https://sporti-backend-live-1.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
+        axios.delete(`https://sporti-backend-live-2.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
         .then((res)=>{
             setLoading(false)
             toast.success('booking deleted');
@@ -225,7 +252,7 @@ const Dashboard = () => {
     const handleConfirmBooking = async (bookingId) => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${bookingId}/confirm`);
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
@@ -241,7 +268,7 @@ const Dashboard = () => {
     const handleRejectBooking = async () => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
             fetchData(); // Refresh bookings after rejection
              setShowModal(false)
             setLoading(false);
@@ -296,14 +323,19 @@ const Dashboard = () => {
                 toast.success('sms sent successfully');
             });
     };
+   
 
+
+    const gotoViewDetails = (formData) => {
+        navigate('/view/details', { state: {data:formData } });
+  }
     return (
         <Container fluid className='dashboard p-3 p-md-5'>
               <div className="row">
                 <div className="col-md-3">
                     <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
                         <div className="icon">
-                        <i class="bi bi-currency-dollar"></i>
+                        <i>&#8377;</i>
                         </div>
                        <div>
                        <h4 className="fs-5">Monthly Revenue</h4>
@@ -371,7 +403,40 @@ const Dashboard = () => {
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(monthlyUsers).length, 'Users')} */}
-                            <Bar data={generateChartData(monthlyUsers, 'Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                           <Bar 
+                    data={generateChartData(monthlyUsers, 'Users', colors)} 
+                    options={{
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Months', // X-axis label
+                                },
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Users', // Y-axis label
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.raw;
+                                    },
+                                },
+                            },
+                        },
+                    }} 
+                />
+
                             {/* {renderTable(monthlyUsers)} */}
                         </Card.Body>
                     </Card>
@@ -383,7 +448,40 @@ const Dashboard = () => {
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(pendingUsers).length, 'Pending Users')} */}
-                            <Bar data={generateChartData(pendingUsers, 'Pending Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            <Bar 
+    data={generateChartData(pendingUsers, 'Pending Users', colors)} 
+    options={{
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Months', // X-axis label
+                },
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Number of Pending Users', // Y-axis label
+                },
+            },
+        },
+        plugins: {
+            legend: {
+                display: true,
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return context.raw;
+                    },
+                },
+            },
+        },
+    }} 
+/>
+
                             {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
@@ -395,7 +493,40 @@ const Dashboard = () => {
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(rejectedUsers).length, 'Rejected Users')} */}
-                            <Bar data={generateChartData(rejectedUsers, 'Rejected Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            <Bar 
+    data={generateChartData(rejectedUsers, 'Rejected Users', colors)} 
+    options={{
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Months', // X-axis label
+                },
+            },
+            y: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Number of Rejected Users', // Y-axis label
+                },
+            },
+        },
+        plugins: {
+            legend: {
+                display: true,
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return context.raw;
+                    },
+                },
+            },
+        },
+    }} 
+/>
+
                             {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
@@ -407,7 +538,24 @@ const Dashboard = () => {
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(successfulUsers).length, 'Successful Users')} */}
-                            <Bar data={generateChartData(successfulUsers, 'Successful Users', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks:{ label: function (context) { return context.raw; } } } } }} />
+                            <Bar data={generateChartData(successfulUsers, 'Successful Users', colors)} options={{ 
+                                scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Months', // X-axis label
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Number of Successful Users', // Y-axis label
+                                        },
+                                    },
+                                },
+                                plugins: { legend: { display: true }, tooltip: { callbacks:{ label: function (context) { return context.raw; } } } } }} />
                             {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
@@ -419,7 +567,23 @@ const Dashboard = () => {
                             <hr />
                             <br />
                             {/* {renderProgress(Object.keys(successfulPayments).length, 'Successful Payments')} */}
-                            <Bar data={generateChartData(successfulPayments, 'Successful Payments', colors)} options={{ plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
+                            <Bar data={generateChartData(successfulPayments, 'Successful Payments', colors)} options={{
+                                 scales: {
+                                    x: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Months', // X-axis label
+                                        },
+                                    },
+                                    y: {
+                                        display: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Number of Successful Payments', // Y-axis label
+                                        },
+                                    },
+                                }, plugins: { legend: { display: true }, tooltip: { callbacks: { label: function (context) { return context.raw; } } } } }} />
                             {/* {renderTable(successfulUsers)} */}
                         </Card.Body>
                     </Card>
@@ -490,7 +654,7 @@ const Dashboard = () => {
                         <tr>
                             <th>Profile</th>
                             <th>Name</th>
-                            <th>Cadre</th>
+                            <th>Officers Category</th>
                             <th>Service</th>
                             <th>Action</th>
                         </tr>
@@ -502,13 +666,13 @@ const Dashboard = () => {
                                     {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
                                     <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
                                     <td>{item.username}</td>
-                                    <td>{item.officerCadre}</td>
+                                    <td>{item.serviceName =="Room Booking"?item.roomType:item.serviceType}</td>
                                     <td>{item.serviceName}</td>
                                     <td className=''>
                                   <div className="d-flex gap-3 flex-wrap h-100">
                                   {/* <i class="bi bi-pencil-fill fs-4 text-success"></i> */}
                                  <TooltipTo title="view booking">
-                                 <button className="btn btn-dark btn sm" onClick={()=>showDetails(item)}>
+                                 <button className="btn btn-dark btn sm" onClick={()=>gotoViewDetails(item)}>
                                   <i class="bi bi-eye-fill" ></i>
                                   </button>
                                  </TooltipTo>

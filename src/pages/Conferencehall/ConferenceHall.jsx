@@ -11,6 +11,7 @@ import Loading from '../../components/popup/Loading';
 import DOMPurify from 'dompurify';
 import cookies  from 'js-cookie'
 import TooltipTo from '@mui/material/Tooltip';
+import { Link } from 'react-router-dom';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 function sanitizeInput(input) {
@@ -58,7 +59,7 @@ const ConferenceHall = () => {
     const fetchBookings = async () => {
         const token = cookies.get('token');
         try {
-            const res = await axios.get('https://sporti-backend-live-1.onrender.com/api/sporti/service/bookings', {
+            const res = await axios.get('https://sporti-backend-live-2.onrender.com/api/sporti/service/bookings', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBookings(res.data);
@@ -109,7 +110,7 @@ const ConferenceHall = () => {
     const handleRejectBooking = async () => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
             fetchBookings(); // Refresh bookings after rejection
             handleCloseModal();
             setLoading(false);
@@ -124,7 +125,7 @@ const ConferenceHall = () => {
     const handleConfirmBooking = async (bookingId) => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${bookingId}/confirm`);
             fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
@@ -143,7 +144,7 @@ const ConferenceHall = () => {
     const handleDeleteBooking = async(bookingId) => {
         setLoading(true);
         try {
-            await axios.delete(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${bookingId}`);
+            await axios.delete(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${bookingId}`);
             fetchBookings(); // Refresh bookings after deletion
             setLoading(false);
             toast.success('Deleted the booking');
@@ -162,7 +163,7 @@ const ConferenceHall = () => {
     const handleEditSubmit = async () => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-1.onrender.com/api/sporti/service/${selectedBooking._id}`, selectedBooking);
+            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${selectedBooking._id}`, selectedBooking);
             fetchBookings(); // Refresh bookings after update
             setEditModal(false);
             setLoading(false);
@@ -256,8 +257,8 @@ const ConferenceHall = () => {
     <div className="d-flex align-items-center justify-content-between py-4 p-2">
         <h1 className="fs-3">Booking details</h1>
       <div className="d-flex align-items-center gap-3 py-1">
-      <button onClick={openServiceModal} className='main-btn fs-6'>Add New Room Booking</button>
-      <button onClick={openServiceModal} className='main-btn fs-6'>Add New Booking</button>
+      <Link to="/new/service"  className='main-btn fs-6'>Add New Event Booking</Link>
+      <Link to="/new/room/booking" className='main-btn fs-6'>Add New Room Booking</Link>
       <button className="btn btn-outline-secondary"  onClick={clearFilters}>Clear Filters</button>
       </div>
     </div>
