@@ -21,7 +21,7 @@ function ConferenceBookings() {
     }
 
     useEffect(()=>{
-        setData(Contextbookings.filter((item)=>item.serviceName == "conference room"));
+        setData(Contextbookings.filter((item)=>item.serviceName == "Conference Room"));
     }, [Contextbookings])
 
     const navigate = useNavigate()

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Pie, Line } from 'react-chartjs-2';
-import { Container, Row, Col, Card, Table, Button, ProgressBar, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Button, ProgressBar, Modal, Form, Accordion } from 'react-bootstrap';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import Select from 'react-select';
 import { CSVLink } from 'react-csv';
@@ -13,6 +13,7 @@ import Loading from '../popup/Loading';
 import TooltipTo from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../hooks/BookingContext';
+import AllRooms from './AllRooms';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -265,7 +266,7 @@ const yAxisLabel = 'Sales in Units';
        }else{
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${formData._id}/confirm`);
+            await axios.patch(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/${formData._id}/confirm`);
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
@@ -305,11 +306,12 @@ const yAxisLabel = 'Sales in Units';
    await axios.get(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/send/room/sms/${id}`)
    .then((res)=>{
     console.log(res);
+    toast.success('Done')
     
    })
    .catch((err)=>{
     console.log(err);
-    
+    toast.error('error please try again later..')
    })
    }
    
@@ -617,6 +619,28 @@ const yAxisLabel = 'Sales in Units';
                 </Col> */}
             </Row>
             <hr />
+           <Accordion>
+            <Accordion.Item eventKey='1'>
+                <Accordion.Header>
+                   View SPORTI-1 Rooms Details
+                </Accordion.Header>
+                <Accordion.Body>
+                <AllRooms roomType="VIP" sporti='SPORTI-1'/>
+            <AllRooms roomType="Standard" sporti='SPORTI-1'/>
+            <AllRooms roomType="Family" sporti='SPORTI-1'/>
+                </Accordion.Body>
+            </Accordion.Item>
+
+            <Accordion.Item eventKey='2'>
+                <Accordion.Header>
+                   View SPORTI-2 Rooms Details
+                </Accordion.Header>
+                <Accordion.Body>
+            <AllRooms roomType="Standard" sporti='SPORTI-1'/>
+            <AllRooms roomType="Family" sporti='SPORTI-1'/>
+                </Accordion.Body>
+            </Accordion.Item>
+           </Accordion>
             <Row className="my-4">
                 {/* <Col>
                     <Select
@@ -644,41 +668,49 @@ const yAxisLabel = 'Sales in Units';
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Recent Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
-                    <div className="table-container">
-                    <table>
-                        <tr>
-                            <th>Profile</th>
-                            <th>Name</th>
-                            <th>Officers Category</th>
-                            <th>Service</th>
-                            <th>Action</th>
-                        </tr>
-                          {
-                            data.map((item, index)=>(
-                              
-                                
-                                <tr>
-                                    {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
-                                    <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
-                                    <td>{item.username}</td>
-                                    <td>{item.serviceName =="Room Booking"?item.roomType:item.serviceType}</td>
-                                    <td>{item.serviceName}</td>
-                                    <td className=''>
-                                  <div className="d-flex gap-3 flex-wrap h-100">
-                                  {/* <i class="bi bi-pencil-fill fs-4 text-success"></i> */}
-                                 <TooltipTo title="view booking">
-                                 <button className="btn btn-dark btn sm" onClick={()=>gotoViewDetails(item)}>
-                                  <i class="bi bi-eye-fill" ></i>
-                                  </button>
-                                 </TooltipTo>
-                                   <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}> <i class="bi bi-trash" ></i></button>
-                                  </div>
-                                    </td>
-                                </tr>
-                            ))
+                        {
+                            data.length!=0?(
+                                <div className="table-container">
+                                <table>
+                                    <tr>
+                                        <th>Profile</th>
+                                        <th>Name</th>
+                                        <th>Officers Category</th>
+                                        <th>Service</th>
+                                        <th>Action</th>
+                                    </tr>
+                                      {
+                                        data.map((item, index)=>(
+                                          
+                                            
+                                            <tr>
+                                                {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                                <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                                <td>{item.username}</td>
+                                                <td>{item.serviceName =="Room Booking"?item.roomType:item.serviceType}</td>
+                                                <td>{item.serviceName}</td>
+                                                <td className=''>
+                                              <div className="d-flex gap-3 flex-wrap h-100">
+                                              {/* <i class="bi bi-pencil-fill fs-4 text-success"></i> */}
+                                             <TooltipTo title="view booking">
+                                             <button className="btn btn-dark btn sm" onClick={()=>gotoViewDetails(item)}>
+                                              <i class="bi bi-eye-fill" ></i>
+                                              </button>
+                                             </TooltipTo>
+                                               <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}> <i class="bi bi-trash" ></i></button>
+                                              </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                  </table>
+                                </div>
+                            ):(
+                                <div className="col-md-3 m-auto">
+                                <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                              </div>
+                            )
                         }
-                      </table>
-                    </div>
                     </div>
                 </div>
                 <div className="col-md-12 mt-4">
@@ -687,43 +719,52 @@ const yAxisLabel = 'Sales in Units';
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="pending").length} pending Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all Pending bookings</p>
                      
-                   <div className="table-container">
-                   <table>
-                        <tr>
-                            <th>Profile</th>
-                            <th>Name</th>
-                            {/* <th>Cadre</th> */}
-                            <th>Service</th>
-                            <th>Action</th>
-                        </tr>
-                          {
-                            data.map((item, index)=>(
-                                item.status == "pending"?(
-                                    <tr>
-                                    {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
-                                    <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
-                                    <td>{item.username}</td>
-                                    {/* <td>{item.officerCadre}</td> */}
-                                    <td>{item.serviceName}</td>
-                                    <td className=''>
-                                   <div className="d-flex gap-2">
-                                  <TooltipTo title="confirm booking">
-                                  <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i></button>
-                                  </TooltipTo>
-                                   <TooltipTo title="reject booking">
-                                   <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
-                                   </TooltipTo>
-                                   <TooltipTo title="Send SMS">
-                                   <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
-                                   </TooltipTo>
-                                   </div>
-                                    </td>
-                                </tr>
-                                ):(null)
-                            ))
-                        }
-                      </table>
-                   </div>
+                 {
+                    data.filter((item) => item.status == "pending").length !=0?(
+                        <div className="table-container">
+                        <table>
+                             <tr>
+                                 <th>Profile</th>
+                                 <th>Name</th>
+                                 {/* <th>Cadre</th> */}
+                                 <th>Service</th>
+                                 <th>Action</th>
+                             </tr>
+                               {
+                                 data.map((item, index)=>(
+                                     item.status == "pending"?(
+                                         <tr>
+                                         {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                         <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                         <td>{item.username}</td>
+                                         {/* <td>{item.officerCadre}</td> */}
+                                         <td>{item.serviceName}</td>
+                                         <td className=''>
+                                        <div className="d-flex gap-2">
+                                       <TooltipTo title="confirm booking">
+                                       <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i></button>
+                                       </TooltipTo>
+                                        <TooltipTo title="reject booking">
+                                        <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                        </TooltipTo>
+                                        <TooltipTo title="Send SMS">
+                                        <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
+                                        </TooltipTo>
+                                        </div>
+                                         </td>
+                                     </tr>
+                                     ):(null)
+                                 ))
+                             }
+                           </table>
+                        </div>
+
+                    ):(
+                            <div className="col-md-3 m-auto">
+                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           </div>
+                    )
+                 }
                     </div>
                 </div>
                 <div className="col-md-12 mt-4">
@@ -773,7 +814,9 @@ const yAxisLabel = 'Sales in Units';
                           </div>
                         )
                         :(
-                            <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           <div className="col-md-3 m-auto">
+                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           </div>
                         )
                      }
                     </div>
@@ -824,7 +867,9 @@ const yAxisLabel = 'Sales in Units';
                            </div>
                         )
                         :(
-                            <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           <div className="col-md-3 m-auto">
+                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           </div>
                         )
                      }
                     </div>
