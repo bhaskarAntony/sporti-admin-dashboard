@@ -7,6 +7,9 @@
 *{
   text-transform: capitalize !important;
 }
+[type="email"], [type="data"], [type="datetime-local"]{
+    text-transform: lowercase !important;
+}
 .app{
     max-height: 100vh !important;
     overflow: hidden;
@@ -40,6 +43,16 @@
   text-decoration: none;
   border-radius: 5px;
 }
+.dropdown-menu{
+  background: linear-gradient(45deg, #282972, #522872) !important;
+}
+.dropdown-menu .dropdown-item{
+  padding: 15px !important;
+}
+.dropdown-menu .dropdown-item:hover{
+  background: #fff !important;
+  color: #282972 !important;
+}
 .btn-close{
     --bs-btn-close-bg:url(https://cdn-icons-png.flaticon.com/128/8791/8791943.png?ga=GA1.1.874872603.1694171926&track=ais) !important;
 }
@@ -62,9 +75,9 @@ th, .navbar{
      background: linear-gradient(45deg, #282972, #522872) !important;
      color: #fff !important;
 }
-.navbar a{
+/* .navbar a{
     color: #fff !important;
-}
+} */
 
 .sidenav{
     list-style-type: none;
@@ -88,10 +101,10 @@ th, .navbar{
 .sidenav .sidenav-item:hover a{
     color: #522872 !important;
 }
-.sidenav .sidenav-item a{
+/* .sidenav .sidenav-item a{
     text-decoration: none;
     color: #fff;
-}
+} */
 
 /* For WebKit Browsers */
 ::-webkit-scrollbar {
@@ -157,4 +170,37 @@ th, .navbar{
     background-color: #fff;
     margin-right: 10px;
     border-radius: 100px;
+  }
+
+  .table-container {
+    padding: 10px;
+    width: 100%;
+    overflow-y: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  table th,
+  table td {
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* Prevent text from wrapping */
+  }
+  
+  table thead {
+    position: sticky;
+    top: 0;
+    background: #f1f1f1; /* Background color for the header */
+    z-index: 1; /* Ensure the header is above the body */
+  }
+  
+  table th {
+    border-bottom: 2px solid #ddd; /* Border below the header */
+  }
+  
+  table td {
+    border-bottom: 1px solid #ddd; /* Border below each row */
   }

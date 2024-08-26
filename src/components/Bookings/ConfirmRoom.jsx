@@ -84,19 +84,19 @@ function ConfirmRoom() {
         let roomPrice = 0;
         switch (formData.roomType) {
             case 'Family':
-                roomPrice = formData.guestType === 'Officers from Karnataka' ? 1600 :
-                            formData.guestType === 'Officers from Other States' ? 2100 :
-                            formData.guestType === 'Serving and Senior Police Officers' ? 1600 : 0;
+                roomPrice = formData.serviceType === 'Officers from Karnataka State' ? 1600 :
+                            formData.serviceType === 'Officers from Other State' ? 2100 :
+                            formData.serviceType === 'Others' ? 1600 : 0;
                 break;
             case 'VIP':
-                roomPrice = formData.guestType === 'Officers from Karnataka' ? 1300 :
-                            formData.guestType === 'Officers from Other States' ? 1600 :
-                            formData.guestType === 'Serving and Senior Police Officers' ? 2700 : 0;
+                roomPrice = formData.serviceType === 'Officers from Karnataka State' ? 1300 :
+                            formData.serviceType === 'Officers from Other State' ? 1600 :
+                            formData.serviceType === 'Others' ? 2700 : 0;
                 break;
             case 'Standard':
-                roomPrice = formData.guestType === 'Officers from Karnataka' ? 800 :
-                            formData.guestType === 'Officers from Other States' ? 1100 :
-                            formData.guestType === 'Serving and Senior Police Officers' ? 1600 : 0;
+                roomPrice = formData.serviceType === 'Officers from Karnataka State' ? 800 :
+                            formData.serviceType === 'Officers from Other State' ? 1100 :
+                            formData.serviceType === 'Others' ? 1600 : 0;
                 break;
             default:
                 roomPrice = 0;
@@ -114,13 +114,13 @@ function ConfirmRoom() {
     const submitForm = (e) => {
         e.preventDefault();
       
-        setIsLoading(true);
-        axios.post('https://sporti-backend-live-2.onrender.com/api/sporti/service/room/book', formData)
+        setIsLoading(true);//https://sporti-backend-live-2.onrender.com
+        axios.post('https://sporti-backend-live-p00l.onrender.com/api/sporti/service/room/book', formData)
             .then(response => {
                 const { success, applicationNo } = response.data;
                 if (success) {
                     setIsLoading(false);
-                   toast.success(`Your booking request has been sent to the administrator. You will receive an email and SMS. It takes one working day for confirmation SMS. Please note your Booking ID No ${response.applicationNo} for reference`)
+                   toast.success(`Success`)
                     console.log(response);
                     localStorage.removeItem('roombooking')
                     navigate('/');
@@ -138,6 +138,14 @@ function ConfirmRoom() {
     if (isLoading) {
         return <Loading />;
     }
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
     
 
 
@@ -159,7 +167,8 @@ function ConfirmRoom() {
                         <span className="fs-6 d-block mt-2">{selectedLanguage === 'english' ? 'Email Address:' : translateToKannada('Email')}{' '}<span className="text-secondary">{formData.email}</span></span>
                         {/* <span className="fs-6 d-block mt-2">{selectedLanguage === 'english' ? 'Cadre:' : translateToKannada('Cadre')}{' '}<span className="text-secondary">{formData.officerCadre}</span></span> */}
                         <span className="fs-6 d-block mt-2">{selectedLanguage === 'english' ? 'Designation:' : translateToKannada('Designation')}{' '}<span className="text-secondary">{formData.officerDesignation}</span></span>
-                        <span className="fs-6 d-block mt-2"><b>{selectedLanguage === 'english' ? 'Event Start date:' : translateToKannada('Event start date')}<span className="text-secondary">{formData.eventdate}</span></b></span>
+                        <span className="fs-6 d-block mt-2"><b>{selectedLanguage === 'english' ? 'Check in:' : translateToKannada('Event start date')}<span className="text-secondary"> {formatDate(formData.checkIn)}</span></b></span>
+                        <span className="fs-6 d-block mt-2"><b>{selectedLanguage === 'english' ? 'Check out:' : translateToKannada('Event start date')}<span className="text-secondary"> {formatDate(formData.checkOut)}</span></b></span>
                         <div className="table-container">
                             <table className='mt-3' cellSpacing="0" cellPadding={15}>
                                 <thead>

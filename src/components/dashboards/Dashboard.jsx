@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import { Container, Row, Col, Card, Table, Button, ProgressBar, Modal, Form } from 'react-bootstrap';
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import Loading from '../popup/Loading';
 import TooltipTo from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
+import { BookingContext } from '../hooks/BookingContext';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -31,6 +32,7 @@ const months = [
 ];
 
 const Dashboard = () => {
+    const { Contextbookings, isloading, error, fetchBookings } = useContext(BookingContext);
     const [data, setData] = useState([]);
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [monthlyUsers, setMonthlyUsers] = useState({});
@@ -45,28 +47,36 @@ const Dashboard = () => {
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
     const [bookings, setBookings] = useState([]);
     const [role, setRole] = useState('');
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false);
     const [viewDetails, setViewDetails] = useState(null)
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [rejectionReason, setRejectionReason] = useState('');
     const navigate = useNavigate();
 
-   const fetchData = () =>{
-    axios.get('https://sporti-backend-live-2.onrender.com/api/sporti/service/bookings')
-    .then(response => {
-        setLoading(false);
-        setData(response.data);
-        console.log(response.data.reverse());
+    
+    useEffect(()=>{
+        setData(Contextbookings);
+        processChartData(Contextbookings);
+    }, [Contextbookings])
+
+   
+
+//    const fetchBookings = () =>{
+//     axios.get('https://sporti-backend-live-2.onrender.com/api/sporti/service/bookings')
+//     .then(response => {
+//         setLoading(false);
+//         setData(response.data);
+//         console.log(response.data.reverse());
         
-        processChartData(response.data);
-    })
-    .catch(error => {
-        setLoading(false)
-        console.error('There was an error fetching the data!', error);
-    });
-   }
-   fetchData()
+//         processChartData(response.data);
+//     })
+//     .catch(error => {
+//         setLoading(false)
+//         console.error('There was an error fetching the data!', error);
+//     });
+//    }
+//    fetchBookings()
 
     const processChartData = (data) => {
         const monthlyUsersData = {};
@@ -193,7 +203,7 @@ const yAxisLabel = 'Sales in Units';
         { label: "Application No", key: "applicationNo" },
         { label: "Sport", key: "sporti" },
         { label: "Service Name", key: "serviceName" },
-        { label: "Event Date", key: "eventdate" },
+        { label: "Event Date", key: "checkIn" },
         { label: "Service Type", key: "serviceType" },
         { label: "No. of Guests", key: "noGuests" },
         { label: "Payment Status", key: "paymentStatus" },
@@ -230,18 +240,18 @@ const yAxisLabel = 'Sales in Units';
 
     const deleteHandler = (applicationNO) =>{
         setLoading(true)
-        axios.delete(`https://sporti-backend-live-2.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
+        axios.delete(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
         .then((res)=>{
             setLoading(false)
             toast.success('booking deleted');
-            fetchData()
+            fetchBookings()
         })
         .catch((err)=>{
             setLoading(false)
             toast.error(err.message)
         })
     }
-    if(loading){
+    if(loading || isloading){
         return <Loading/>
     }
     const showDetails = (data) =>{
@@ -249,27 +259,33 @@ const yAxisLabel = 'Sales in Units';
         setShowModal(true)
     }
 
-    const handleConfirmBooking = async (bookingId) => {
+    const handleConfirmBooking = async (formData) => {
+       if(formData.serviceName == "Room Booking"){
+            navigate(`/select/room`, { state: {data:formData } })
+       }else{
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${formData._id}/confirm`);
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');
             // window.location.reload();
-            fetchData();
+            fetchBookings();
         } catch (error) {
+
+
             setLoading(false);
             toast.success('Accepted the request');
             console.error('Error:', error);
         }
+       }
     };
 
     const handleRejectBooking = async () => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
-            fetchData(); // Refresh bookings after rejection
+            await axios.patch(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/${selectedBooking._id}/reject`, { rejectionReason });
+            fetchBookings(); // Refresh bookings after rejection
              setShowModal(false)
             setLoading(false);
             toast.warning('Rejected the request');
@@ -285,49 +301,27 @@ const yAxisLabel = 'Sales in Units';
         setShowModal(true);
     };
 
-    const sendSMS = (message, number) => {
-        const url = 'https://www.fast2sms.com/dev/bulkV2'; 
-        // Check if API key and other required environment variables are set
-        // if (!process.env.FAST2SMS_API_KEY) {
-        //     console.error('API key is not set in environment variables');
-        //     return;
-        // }
+   const resendSMS = async(id)=>{
+   await axios.get(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/send/room/sms/${id}`)
+   .then((res)=>{
+    console.log(res);
     
-        if (!message || !number) {
-            console.error('Message and number parameters are required');
-            return;
-        }
+   })
+   .catch((err)=>{
+    console.log(err);
     
-        const headers = {
-            'authorization': 'wSoG7AcXmz2VrBYvyqLfld4RJsn9CxKOQDa3eTEkF5gZihpP8HClGW6FOeizQb0jMKwDnxNrq5mU8T12', // Use environment variable for API key
-            'Content-Type': 'application/json'
-        };
-          
-        // Define the JSON body for the request
-        const data = {
-            route: 'q',
-            message: message,
-            flash: 0,
-            numbers: '9606729320'  // Replace with actual phone numbers
-        };
-          
-        // Send the POST request
-        axios.post(url, data, { headers })
-            .then(response => {
-                console.log('Status Code:', response.status);
-                console.log('Response Body:', response.data);
-                toast.success('sms sent successfully');
-            })
-            .catch(error => {
-                console.error('Error:', error.response ? error.response.data : error.message);
-                toast.success('sms sent successfully');
-            });
-    };
+   })
+   }
    
 
 
     const gotoViewDetails = (formData) => {
-        navigate('/view/details', { state: {data:formData } });
+       if(formData.serviceName == "Room Booking"){
+         navigate('/view/room/details', { state: {data:formData } });
+       }
+       else{
+        navigate('/view/service/details', { state: {data:formData } });
+       }
   }
     return (
         <Container fluid className='dashboard p-3 p-md-5'>
@@ -650,7 +644,8 @@ const yAxisLabel = 'Sales in Units';
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Recent Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
-                      <table>
+                    <div className="table-container">
+                    <table>
                         <tr>
                             <th>Profile</th>
                             <th>Name</th>
@@ -684,14 +679,16 @@ const yAxisLabel = 'Sales in Units';
                         }
                       </table>
                     </div>
+                    </div>
                 </div>
-                <div className="col-md-6 mt-4">
+                <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Pending Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="pending").length} pending Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all Pending bookings</p>
                      
-                      <table>
+                   <div className="table-container">
+                   <table>
                         <tr>
                             <th>Profile</th>
                             <th>Name</th>
@@ -711,10 +708,13 @@ const yAxisLabel = 'Sales in Units';
                                     <td className=''>
                                    <div className="d-flex gap-2">
                                   <TooltipTo title="confirm booking">
-                                  <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button>
+                                  <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i></button>
                                   </TooltipTo>
                                    <TooltipTo title="reject booking">
                                    <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                   </TooltipTo>
+                                   <TooltipTo title="Send SMS">
+                                   <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
                                    </TooltipTo>
                                    </div>
                                     </td>
@@ -723,9 +723,10 @@ const yAxisLabel = 'Sales in Units';
                             ))
                         }
                       </table>
+                   </div>
                     </div>
                 </div>
-                <div className="col-md-6 mt-4">
+                <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Confirmed Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="confirmed").length} confirmed Bookings</h1>
@@ -733,7 +734,8 @@ const yAxisLabel = 'Sales in Units';
                         <hr />
                      {
                         data.filter((item)=>item.status == "confirmed").length !=0?(
-                            <table>
+                          <div className="table-container">
+                              <table>
                             <tr>
                                 <th>Profile</th>
                                 <th>Name</th>
@@ -751,16 +753,24 @@ const yAxisLabel = 'Sales in Units';
                                         {/* <td>{item.officerCadre}</td> */}
                                         <td>{item.serviceName}</td>
                                         <td className=''>
-                                        <div className="d-flex gap-2 flex-wrap h-100">
-                                        <TooltipTo title="send reject booking">    <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button></TooltipTo>
+                                        <div className="d-flex gap-2 flex-nowrap h-100">
+                                        <TooltipTo title="Send SMS">
+                                        <button className="btn btn-dark btn-sm"  onClick={() => resendSMS(item._id)}><i class="bi bi-send"></i></button>
+                                        </TooltipTo>
+                                        <TooltipTo title="reject booking">
+                                   <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                   </TooltipTo>
+                                        {/* <TooltipTo title="send reject booking">    <button className="btn btn-success btn-sm"  onClick={() => handleShowModal(item)}>&#8377;<i class="bi bi-check"></i></button></TooltipTo> */}
                                         <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
-                                  </div>
+                                       
+                                        </div>
                                         </td>
                                     </tr>
                                     ):(null)
                                 ))
                             }
                           </table>
+                          </div>
                         )
                         :(
                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
@@ -768,7 +778,7 @@ const yAxisLabel = 'Sales in Units';
                      }
                     </div>
                 </div>
-                <div className="col-md-6 mt-4">
+                <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
                         <h1 className="fs-5">Rejected Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="rejected").length} Rejected Bookings</h1>
@@ -776,7 +786,8 @@ const yAxisLabel = 'Sales in Units';
                         <hr />
                      {
                         data.filter((item)=>item.status == "rejected").length !=0?(
-                            <table>
+                           <div className="table-container">
+                             <table>
                             <tr>
                                 <th>Profile</th>
                                 <th>Name</th>
@@ -794,12 +805,15 @@ const yAxisLabel = 'Sales in Units';
                                         {/* <td>{item.officerCadre}</td> */}
                                         <td>{item.serviceName}</td>
                                         <td className=''>
-                                       <div className="d-flex gap-2">
+                                       <div className="d-flex gap-2 flex-nowrap">
                                      
                                       
                                      
-                                      <TooltipTo title="send reject sms">   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item._id)}><i class="bi bi-check-lg"></i></button></TooltipTo>
+                                      <TooltipTo title="send reject sms">   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i></button></TooltipTo>
                                       <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
+                                      <TooltipTo title="Send SMS">
+                                   <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
+                                   </TooltipTo>
                                        </div>
                                         </td>
                                     </tr>
@@ -807,6 +821,7 @@ const yAxisLabel = 'Sales in Units';
                                 ))
                             }
                           </table>
+                           </div>
                         )
                         :(
                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />

@@ -151,15 +151,16 @@ function MainRoomBook() {
             return (
                 <>
                     <Dropdown.Item eventKey="Family">{selectedLanguage === 'kannada' ? 'ಕುಟುಂಬ' : 'Family'}</Dropdown.Item>
+                    <Dropdown.Item eventKey="VIP">{selectedLanguage === 'kannada' ? 'ವಿಐಪಿ' : 'Suite (ADGP & Above)'}</Dropdown.Item>
                     <Dropdown.Item eventKey="Standard">{selectedLanguage === 'kannada' ? 'ಸಾಮಾನ್ಯ' : 'Standard'}</Dropdown.Item>
                 </>
             );
         } else if (formData.sporti === 'SPORTI-2') {
             return (
                 <>
-                    <Dropdown.Item eventKey="Family">{selectedLanguage === 'kannada' ? 'ಕುಟುಂಬ' : 'Family'}</Dropdown.Item>
-                    <Dropdown.Item eventKey="VIP">{selectedLanguage === 'kannada' ? 'ವಿಐಪಿ' : 'Suite (ADGP & Above)'}</Dropdown.Item>
-                    <Dropdown.Item eventKey="Standard">{selectedLanguage === 'kannada' ? 'ಸಾಮಾನ್ಯ' : 'Standard'}</Dropdown.Item>
+                 <Dropdown.Item eventKey="Family">{selectedLanguage === 'kannada' ? 'ಕುಟುಂಬ' : 'Family'}</Dropdown.Item>
+                 <Dropdown.Item eventKey="Standard">{selectedLanguage === 'kannada' ? 'ಸಾಮಾನ್ಯ' : 'Standard'}</Dropdown.Item>
+                   
                 </>
             );
         } else {
@@ -174,8 +175,8 @@ function MainRoomBook() {
         if (!validateForm()) {
             return;
         }
-        setIsLoading(true);
-        axios.post('https://sporti-backend-live.onrender.com/api/sporti/service/room/book', formData)
+        setIsLoading(true);//https://sporti-backend-live.onrender.com
+        axios.post('https://sporti-backend-live-p00l.onrender.com/api/sporti/service/room/book', formData)
             .then(response => {
                 const { success, user } = response.data;
                 if (success) {
@@ -268,23 +269,23 @@ function MainRoomBook() {
                                 <span htmlFor="guestType" className="form-span">
                                     {selectedLanguage === 'kannada' ? 'ಅತಿಥಿ ಪ್ರಕಾರ' : 'Officers Category'}
                                 </span>
-                                <Dropdown onSelect={(value) => handleDropdownChange('guestType', value)} className="w-100">
+                                <Dropdown onSelect={(value) => handleDropdownChange('serviceType', value)} className="w-100">
                                     <Dropdown.Toggle variant="secondary" id="dropdown-guestType" className="w-100">
-                                        {formData.guestType || (selectedLanguage === 'kannada' ? 'ಅತಿಥಿ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ' : 'Select Officers Category')}
+                                        {formData.serviceType || (selectedLanguage === 'kannada' ? 'ಅತಿಥಿ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ' : 'Select Officers Category')}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item eventKey="Officers from Karnataka">
-                                            {selectedLanguage === 'kannada' ? 'ಕರ್ನಾಟಕದ ಅಧಿಕಾರಿಗಳು' : 'Serving and Retired Officers of Karnataka Cadre'}
+                                        <Dropdown.Item eventKey="Officers from Karnataka State">
+                                            {selectedLanguage === 'kannada' ? 'ಕರ್ನಾಟಕದ ಅಧಿಕಾರಿಗಳು' : 'Officers from Karnataka State'}
                                         </Dropdown.Item>
-                                        <Dropdown.Item eventKey="Officers from Other States">
+                                        <Dropdown.Item eventKey="Officers from Other State">
                                             {selectedLanguage === 'kannada' ? 'ಇತರೆ ರಾಜ್ಯಗಳ ಅಧಿಕಾರಿಗಳು' : ' ⁠Officers from other Cadres'}
                                         </Dropdown.Item>
-                                        <Dropdown.Item eventKey="Serving and Senior Police Officers">
+                                        <Dropdown.Item eventKey="Others">
                                             {selectedLanguage === 'kannada' ? 'ಇತರೆ' : 'Others'}
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                                {errors.guestType && <small className="text-danger">{errors.guestType}</small>}
+                                {errors.serviceType && <small className="text-danger">{errors.serviceType}</small>}
                             </div>
                         </div>
                     {/* <div className="form-group mt-3">

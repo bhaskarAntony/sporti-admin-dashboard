@@ -19,6 +19,12 @@ import ConfirmService from './components/Bookings/ConfirmService';
 import MainRoomBook from './components/Bookings/RoomBooking';
 import ConfirmRoom from './components/Bookings/ConfirmRoom';
 import DetailsView from './pages/view/DetailsView';
+import RoomSelection from './components/dashboards/RoomNumber';
+import RoomBookings from './pages/bookings/RoomBookings';
+import BarbequeBookings from './pages/bookings/BarbequeBookings';
+import ConferenceBookings from './pages/bookings/ConferenceBookings';
+import MainHallBookings from './pages/bookings/MainHallBookings';
+import RoomDetails from './pages/view/RoomDetails';
 
 
 
@@ -47,8 +53,15 @@ function App() {
       <Route path='/confirm/service' element={<ConfirmService/>}/>
       <Route path='/new/room/booking' element={<MainRoomBook/>}/>
       <Route path='/confirm/room/details' element={<ConfirmRoom/>}/>
-      <Route path='/view/details' element={<DetailsView/>}/>
-    </Routes>
+      <Route path='/view/service/details' element={<DetailsView/>}/>
+      <Route path='/view/room/details' element={<RoomDetails/>}/>
+      <Route path='/select/room' element={<RoomSelection/>}/>
+      {/* bookings */}
+      <Route path='/room/bookings' element={<RoomBookings/>}/>
+      <Route path='/main/hall/bookings' element={<MainHallBookings/>}/>
+      <Route path='/conference/hall/bookings' element={<ConferenceBookings/>}/>
+      <Route path='/barbeque/area/bookings' element={<BarbequeBookings/>}/>
+      </Routes>
    </div>
     </div>
    </div>

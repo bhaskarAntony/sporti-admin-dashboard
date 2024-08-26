@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loading from '../../components/popup/Loading';
 
-function DetailsView() {
+function RoomDetails() {
     const location = useLocation();
     const [isKannada, setIsKannada] = useState(false)
     const [selectedLanguage, setSelectedLanguage] = useState('english');
@@ -40,7 +40,7 @@ function DetailsView() {
     }, [location.state]);
 
     useEffect(() => {
-        setTotalCost(calculateTotalServiceCost());
+        setTotalCost(calculateTotalRoomCost());
     }, [formData]);
 
     useEffect(() => {
@@ -86,28 +86,35 @@ function DetailsView() {
     };
 
    
-    const calculateTotalServiceCost = () => {
-        let baseCost = 0;
-        switch (formData.serviceName.toLowerCase()) {
-            case 'main function hall':
-                baseCost = formData.serviceType === 'Others' ? 45000 :
-                           formData.serviceType === 'Senior Police Officers of Other Govt Department' ? 25000 :
-                           formData.serviceType === 'Serving and Senior Police Officers' ? 2000 : 0;
+    const calculateTotalRoomCost = () => {
+        let roomPrice = 0;
+        switch (formData.roomType) {
+            case 'Family':
+                roomPrice = formData.guestType === 'Officers from Karnataka' ? 1600 :
+                            formData.guestType === 'Officers from Other States' ? 2100 :
+                            formData.guestType === 'Serving and Senior Police Officers' ? 1600 : 0;
                 break;
-            case 'conference room':
-                baseCost = formData.serviceType === 'Others' ? 15000 :
-                           formData.serviceType === 'Senior Police Officers of Other Govt Department' ? 10000 :
-                           formData.serviceType === 'Serving and Senior Police Officers' ? 7500 : 0;
+            case 'VIP':
+                roomPrice = formData.guestType === 'Officers from Karnataka' ? 1300 :
+                            formData.guestType === 'Officers from Other States' ? 1600 :
+                            formData.guestType === 'Serving and Senior Police Officers' ? 2700 : 0;
                 break;
-            case 'barbeque area':
-                baseCost = formData.serviceType === 'Others' ? 10000 :
-                           formData.serviceType === 'Senior Police Officers of Other Govt Department' ? 7500 :
-                           formData.serviceType === 'Serving and Senior Police Officers' ? 5000 : 0;
+            case 'Standard':
+                roomPrice = formData.guestType === 'Officers from Karnataka' ? 800 :
+                            formData.guestType === 'Officers from Other States' ? 1100 :
+                            formData.guestType === 'Serving and Senior Police Officers' ? 1600 : 0;
                 break;
             default:
-                baseCost = 0;
+                roomPrice = 0;
         }
-        return baseCost * formData.numberOfDays;
+    
+        const checkInDate = new Date(formData.checkIn);
+        const checkOutDate = new Date(formData.checkOut);
+        const diffTime = Math.abs(checkOutDate - checkInDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        setNumberOfDays(diffDays)
+    
+        return roomPrice * formData.noGuests * diffDays;
     };
 
     const submitForm = (e) => {
@@ -158,30 +165,31 @@ function DetailsView() {
                         <span className="fs-6 d-block mt-2">{selectedLanguage === 'english' ? 'Email Address:' : translateToKannada('Email')}{' '}<span className="text-secondary">{formData.email}</span></span>
                         {/* <span className="fs-6 d-block mt-2">{selectedLanguage === 'english' ? 'Cadre:' : translateToKannada('Cadre')}{' '}<span className="text-secondary">{formData.officerCadre}</span></span> */}
                         <span className="fs-6 d-block mt-2">{selectedLanguage === 'english' ? 'Designation:' : translateToKannada('Designation')}{' '}<span className="text-secondary">{formData.officerDesignation}</span></span>
-                        <span className="fs-6 d-block mt-2"><b>{selectedLanguage === 'english' ? 'Event Start date:' : translateToKannada('Event start date')}<span className="text-secondary">{formatDate(formData.eventdate)}</span></b></span>
+                        <span className="fs-6 d-block mt-2"><b>{selectedLanguage === 'english' ? 'Check in:' : translateToKannada('Event start date')}<span className="text-secondary"> {formatDate(formData.checkIn)}</span></b></span>
+                        <span className="fs-6 d-block mt-2"><b>{selectedLanguage === 'english' ? 'Check out:' : translateToKannada('Event start date')}<span className="text-secondary"> {formatDate(formData.checkOut)}</span></b></span>
                         <div className="table-container">
                             <table className='mt-3' cellSpacing="0" cellPadding={15}>
                                 <thead>
                                     <tr className='bg-main text-light border'>
                                         <th>SI.No</th>
-                                        <th>{selectedLanguage === 'english' ? 'Service Name' : translateToKannada('Hall type')}</th>
-                                        <th>{selectedLanguage === 'english' ? 'Officers Cadre' : translateToKannada('Officers Category')}</th>
-                                        <th>{selectedLanguage === 'english' ? 'No.Days' : translateToKannada('Approximate No of guests')}</th>
-                                        <th>{selectedLanguage === 'english' ? 'Event Date' : translateToKannada('Event end date')}</th>
-                                        <th>{selectedLanguage === 'english' ? 'Per guest' : translateToKannada('Total Cost (₹)')}</th>
+                                        <th>{selectedLanguage === 'english' ? 'Room Type' : translateToKannada('Hall type')}</th>
+                                        <th>{selectedLanguage === 'english' ? 'Officers Category' : translateToKannada('Officers Category')}</th>
+                                        <th>{selectedLanguage === 'english' ? 'No.Guests' : translateToKannada('Approximate No of guests')}</th>
+                                        <th>{selectedLanguage === 'english' ? 'No.Days' : translateToKannada('Event end date')}</th>
+                                        {/* <th>{selectedLanguage === 'english' ? 'Per guest' : translateToKannada('Total Cost (₹)')}</th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr className='border'>
                                         <td>01</td>
-                                        <td>{formData.serviceName}</td>
-                                        <td title={formData.serviceType}>{formData.serviceType}</td>
-                                        <td>{formData.numberOfDays} Days</td>
-                                        <td>{formatDate(formData.eventdate)}</td>
-                                        <td>&#8377;{totalCost / formData.numberOfDays / formData.noGuests}/-</td>
+                                        <td>{formData.roomType}</td>
+                                        <td>{formData.serviceType}</td>
+                                        <td>{formData.noGuests} guests</td>
+                                        <td>{numberOfDays} days</td>
+                                        {/* <td>&#8377;{totalCost / formData.noGuests}/-</td> */}
                                     </tr>
                                     <tr className='border'>
-                                        <td colSpan={4}><big><b>{selectedLanguage === 'english' ? 'Total' : translateToKannada('Total')}</b></big></td>
+                                        <td colSpan={3}><big><b>{selectedLanguage === 'english' ? 'Total' : translateToKannada('Total')}</b></big></td>
                                         <td className='bg-main text-center' colSpan={2}><h3 className="fs-5 text-light">&#8377; {formData.totalCost}/-</h3></td>
                                     </tr>
                                 </tbody>
@@ -209,4 +217,4 @@ function DetailsView() {
     );
 }
 
-export default DetailsView;
+export default RoomDetails;

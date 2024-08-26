@@ -59,7 +59,7 @@ const ConferenceHall = () => {
     const fetchBookings = async () => {
         const token = cookies.get('token');
         try {
-            const res = await axios.get('https://sporti-backend-live-2.onrender.com/api/sporti/service/bookings', {
+            const res = await axios.get('https://sporti-backend-live-p00l.onrender.com/api/sporti/service/bookings', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBookings(res.data);
@@ -125,7 +125,7 @@ const ConferenceHall = () => {
     const handleConfirmBooking = async (bookingId) => {
         setLoading(true);
         try {
-            await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${bookingId}/confirm`);
+            await axios.patch(`https://sporti-backend-live-p00l.onrender.com//api/sporti/service/${bookingId}/confirm`);
             fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
             toast.success('Accepted the request');

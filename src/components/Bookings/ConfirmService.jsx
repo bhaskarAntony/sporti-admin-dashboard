@@ -71,21 +71,21 @@ function ConfirmService() {
 
     const calculateTotalServiceCost = () => {
         let baseCost = 0;
-        switch (formData.serviceName.toLowerCase()) {
-            case 'main function hall':
+        switch (formData.serviceName) {
+            case 'Main Function Hall':
                 baseCost = formData.serviceType === 'Others' ? 45000 :
-                           formData.serviceType === 'Senior Police Officers of Other Govt Department' ? 25000 :
-                           formData.serviceType === 'Serving and Senior Police Officers' ? 2000 : 0;
+                           formData.serviceType === 'Officers from Other State' ? 25000 :
+                           formData.serviceType === 'Officers from Karnataka State' ? 2000 : 0;
                 break;
-            case 'conference room':
+            case 'Conference Room':
                 baseCost = formData.serviceType === 'Others' ? 15000 :
-                           formData.serviceType === 'Senior Police Officers of Other Govt Department' ? 10000 :
-                           formData.serviceType === 'Serving and Senior Police Officers' ? 7500 : 0;
+                           formData.serviceType === 'Officers from Other State' ? 10000 :
+                           formData.serviceType === 'Officers from Karnataka State' ? 7500 : 0;
                 break;
-            case 'barbeque area':
+            case 'Barbeque Area':
                 baseCost = formData.serviceType === 'Others' ? 10000 :
-                           formData.serviceType === 'Senior Police Officers of Other Govt Department' ? 7500 :
-                           formData.serviceType === 'Serving and Senior Police Officers' ? 5000 : 0;
+                           formData.serviceType === 'Officers from Other State' ? 7500 :
+                           formData.serviceType === 'Officers from Karnataka State' ? 5000 : 0;
                 break;
             default:
                 baseCost = 0;
@@ -97,12 +97,13 @@ function ConfirmService() {
         e.preventDefault();
 
         setIsLoading(true);
-        axios.post('https://sporti-backend-live-2.onrender.com/api/sporti/service/service/book', formData)
+        axios.post('https://sporti-backend-live-p00l.onrender.com/api/sporti/service/service/book', formData)
             .then(response => {
                 const { success, user } = response.data;
                 if (success) {
                     setIsLoading(false);
-                  toast.success(`Your booking request has been sent to the administrator. You will receive an email and SMS. It takes one working day for confirmation SMS. Please note your Booking ID No ${response.data.applicationNo} for reference`)
+                  toast.success(`Success`)
+                  navigate('/');
                 } else {
                     setIsLoading(false);
                    toast.error('Something went wrong, please try again later.')

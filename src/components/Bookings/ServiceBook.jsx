@@ -318,8 +318,8 @@ function MainFunctionHallBooking() {
                                             {formData.serviceType || (selectedLanguage === 'english' ? 'Select Officers Category' : 'ಅಧಿಕಾರಿಗಳ ವರ್ಗ ಆಯ್ಕೆಮಾಡಿ')}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
-                                            <Dropdown.Item eventKey="Serving and Senior Police Officers">Serving and Retired Officers of Karnataka Cadre</Dropdown.Item>
-                                            <Dropdown.Item eventKey="Senior Police Officers of Other Govt Department">⁠Officers from other Cadres</Dropdown.Item>
+                                            <Dropdown.Item eventKey="Officers from Karnataka State">Serving and Retired Officers of Karnataka Cadre</Dropdown.Item>
+                                            <Dropdown.Item eventKey="Officers from Other State">⁠Officers from other Cadres</Dropdown.Item>
                                             <Dropdown.Item eventKey="Others">Others</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
@@ -393,9 +393,9 @@ function MainFunctionHallBooking() {
                                             {formData.serviceName === "" ? (selectedLanguage === 'english' ? 'Select Hall Type' : 'ಹಾಲ್ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ') : formData.serviceName}
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
-                                            <Dropdown.Item eventKey="conference room">Conference Room</Dropdown.Item>
-                                            <Dropdown.Item eventKey="main function hall">Main Function Hall</Dropdown.Item>
-                                            <Dropdown.Item eventKey="barbeque area">Barbeque Area</Dropdown.Item>
+                                            <Dropdown.Item eventKey="Conference Room">Conference Room</Dropdown.Item>
+                                            <Dropdown.Item eventKey="Main Function Hall">Main Function Hall</Dropdown.Item>
+                                            <Dropdown.Item eventKey="Barbeque Area">Barbeque Area</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                     {errors.serviceName && <div className="text-danger">{errors.serviceName}</div>}
