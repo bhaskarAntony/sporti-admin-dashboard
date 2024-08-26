@@ -742,14 +742,14 @@ const yAxisLabel = 'Sales in Units';
                                          <td className=''>
                                         <div className="d-flex gap-2">
                                        <TooltipTo title="confirm booking">
-                                       <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i></button>
+                                       <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i>Confirm</button>
                                        </TooltipTo>
                                         <TooltipTo title="reject booking">
-                                        <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                        <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i>Reject</button>
                                         </TooltipTo>
-                                        <TooltipTo title="Send SMS">
+                                        {/* <TooltipTo title="Send SMS">
                                         <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
-                                        </TooltipTo>
+                                        </TooltipTo> */}
                                         </div>
                                          </td>
                                      </tr>
@@ -852,11 +852,11 @@ const yAxisLabel = 'Sales in Units';
                                      
                                       
                                      
-                                      <TooltipTo title="send reject sms">   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i></button></TooltipTo>
-                                      <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
-                                      <TooltipTo title="Send SMS">
+                                      <TooltipTo title="Confirm">   <button className="btn btn-success btn-sm" onClick={()=>handleConfirmBooking(item)}><i class="bi bi-check-lg"></i>Confirm</button></TooltipTo>
+                                      <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i>Delete</button></TooltipTo>
+                                      {/* <TooltipTo title="Send SMS">
                                    <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
-                                   </TooltipTo>
+                                   </TooltipTo> */}
                                        </div>
                                         </td>
                                     </tr>
