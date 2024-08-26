@@ -212,7 +212,8 @@ function MainRoomBook() {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
 
-    const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    // const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    const currentDateTime = new Date().toISOString().split('T')[0];
     return (
         <div className='main-function-hall-booking container-fluid p-1 p-md-5 form'>
             <div className="row">
@@ -330,7 +331,7 @@ function MainRoomBook() {
                     <div className="form-group mt-3">
                         <span htmlFor="checkIn">{selectedLanguage === 'kannada' ? 'ಪರಿಶೀಲನೆ' : 'Check-In'}</span>
                         <input
-                            type="datetime-local"
+                            type="date"
                             id="checkIn"
                             name="checkIn"
                             min={currentDateTime}
@@ -343,7 +344,7 @@ function MainRoomBook() {
                     <div className="form-group mt-3">
                         <span htmlFor="checkOut">{selectedLanguage === 'kannada' ? 'ಚೆಕ್-ಔಟ್' : 'Check-Out'}</span>
                         <input
-                            type="datetime-local"
+                            type="date"
                             id="checkOut"
                             name="checkOut"
                             min={currentDateTime}

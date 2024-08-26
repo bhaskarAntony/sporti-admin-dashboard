@@ -367,7 +367,7 @@ const yAxisLabel = 'Sales in Units';
                 <div className="col-md-3">
                     <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
                         <div className="icon">
-                        <i class="bi bi-currency-dollar"></i>
+                        <i class="bi bi-people"></i>
                         </div>
                        <div>
                        <h4 className="fs-5">Pending Users</h4>
