@@ -1,92 +1,107 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Table } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import './style.css'
+import './style.css';
 
-function AllRooms({roomType, sporti}) {
+function AllRooms({ roomType, sporti }) {
   const [loading, setLoading] = useState(false);
   const [roomData, setRoomData] = useState({});
-  const [formData, setFormData] = useState({});
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [selectedSporti, setSelectedSporti] = useState(sporti)
-    useEffect(() => {
-        const fetchRoomData = async () => {
-        //   if (roomType || !sporti) return;
-    
-          setLoading(true);
-          try {
-            const response = await axios.get(
-              `https://sporti-backend-live-p00l.onrender.com/api/available/rooms?roomType=${roomType}&sporti=${sporti}`
-            );
-            const rooms = response.data;
-    
-            const structuredData = rooms.reduce((acc, room) => {
-              const { _id, floor, category, roomNumber, isBooked } = room;
-              if (!acc[floor]) acc[floor] = {};
-              if (!acc[floor][category]) acc[floor][category] = [];
-    
-              acc[floor][category].push({
-                id: _id,
-                roomNumber,
-                isBooked,
-              });
-    
-              return acc;
-            }, {});
-    
-            setRoomData(structuredData);
-            setLoading(false);
-          } catch (error) {
-            setLoading(false);
-            toast.error('Failed to fetch room data.');
-            console.error('Error:', error);
-          }
-        };
-    
-        fetchRoomData();
-      }, [roomType, sporti]);
+
+  useEffect(() => {
+    const fetchRoomData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('https://sporti-backend-live-p00l.onrender.com/api/all/rooms');
+        const rooms = response.data.data;
+
+        const structuredData = rooms.reduce((acc, room) => {
+          const { floor, category, roomNumber, isBooked } = room;
+          if (!acc[floor]) acc[floor] = {};
+          if (!acc[floor][category]) acc[floor][category] = [];
+
+          acc[floor][category].push({
+            ...room, // Include all room properties for easier access
+          });
+
+          return acc;
+        }, {});
+
+        setRoomData(structuredData);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        toast.error('Failed to fetch room data.');
+        console.error('Error:', error);
+      }
+    };
+
+    fetchRoomData();
+  }, [roomType, sporti]);
+
+  const clearRoom = async (id) => {
+    try {
+      const res = await axios.post(`http://localhost:4000/api/clear/room/${id}`);
+      toast.success('Room cleared successfully');
+      console.log(id);
+      
+      console.log(res);
+      
+      // Optionally, refresh the room data after clearing
+      // fetchRoomData();
+    } catch (error) {
+      toast.error('Failed to clear room. Please try again later.');
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div className='all-rooms'>
-        <Container fluid className="bg-white p-3">
-        {Object.keys(roomData).map((floor) => (
-                <div key={floor}>
-                  <h6>{`${floor}`}</h6>
-                  <hr />
-                  <Row>
-                    {Object.keys(roomData[floor]).map((category) => (
-                      <Col key={category} xs={12} md={12} lg={12}>
-                        <div className="mb-3">
-                        <button className={`btn-sm p-1 py-0 rounded-pill px-4 btn btn-${category === "VIP" ? "primary" : category === "FAMILY ROOM" ? "success" : "dark"}`}>
-                            {category}
-                        </button>
-                          <div className='p-3 d-flex'>
-                            {roomData[floor][category].map((room) => (
-
-                              <button
-                                key={room.id}
-                                className={`m-1 ${room.isBooked ? "booked room active" : "available room"}`}
-                                // onClick={() => handleRoomSelect(room)}
-                               
-                                style={{
-                                  backgroundColor: selectedRoom && selectedRoom.id === room.id ? "#007bff" : "",
-                                  borderColor: selectedRoom && selectedRoom.id === room.id ? "#007bff" : "",
-                                  color: selectedRoom && selectedRoom.id === room.id ? "#fff" : "",
-                                }}
-                              >
-                                {room.roomNumber}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </Col>
-                    ))}
-                  </Row>
+      <Container fluid className="bg-white p-3">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          Object.keys(roomData).map((floor) => (
+            <div key={floor}>
+              <h5 className="mt-4">{`${floor}`}</h5>
+              <hr />
+              {Object.keys(roomData[floor]).map((category) => (
+                <div key={category} className="mb-4">
+                  <h6>{category}</h6>
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>Room Number</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {roomData[floor][category].map((room, index) => (
+                        <tr key={index}>
+                          <td>{room.roomNumber}</td>
+                          <td>
+                            <button
+                              onClick={room.isBooked?(() => clearRoom(room._id)):(null)} // Pass the function reference correctly
+                              className={`badge btn ${
+                                room.isBooked ? 'btn-danger' : 'btn-success'
+                              }`}
+                              style={{ cursor: 'pointer' }} // Make it clear that the badge is clickable
+                            >
+                              {room.isBooked ? 'Clear This Room' : 'Available'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
                 </div>
               ))}
+            </div>
+          ))
+        )}
       </Container>
     </div>
-  )
+  );
 }
 
-export default AllRooms
+export default AllRooms;

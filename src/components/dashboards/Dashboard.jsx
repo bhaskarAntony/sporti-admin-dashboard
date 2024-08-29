@@ -92,7 +92,7 @@ const Dashboard = () => {
         let totalRevenueData = 0;
 
         data.forEach(item => {
-            const month = new Date(item.eventdate).getMonth() + 1;
+            const month = new Date(item.checkIn?item.checkIn:item.eventdate).getMonth() + 1;
 
             monthlyUsersData[month] = (monthlyUsersData[month] || 0) + 1;
 
@@ -265,7 +265,7 @@ const yAxisLabel = 'Sales in Units';
             navigate(`/select/room`, { state: {data:formData } })
        }else{
         setLoading(true);
-        try {
+        try {//https://sporti-backend-live-p00l.onrender.com
             await axios.patch(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/${formData._id}/confirm`);
             // fetchBookings(); // Refresh bookings after confirmation
             setLoading(false);
@@ -324,6 +324,12 @@ const yAxisLabel = 'Sales in Units';
        else{
         navigate('/view/service/details', { state: {data:formData } });
        }
+  }
+
+  const editRoom = (formData) =>{
+    if(formData.serviceName === "Room Booking"){
+        navigate(`/edit/rooms/${formData.applicationNo}`)
+    }
   }
     return (
         <Container fluid className='dashboard p-3 p-md-5'>
@@ -803,6 +809,8 @@ const yAxisLabel = 'Sales in Units';
                                    </TooltipTo>
                                         {/* <TooltipTo title="send reject booking">    <button className="btn btn-success btn-sm"  onClick={() => handleShowModal(item)}>&#8377;<i class="bi bi-check"></i></button></TooltipTo> */}
                                         <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
+
+                                        <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>editRoom(item)}><i class="bi bi-pencil"></i>Edit</button></TooltipTo>
                                        
                                         </div>
                                         </td>

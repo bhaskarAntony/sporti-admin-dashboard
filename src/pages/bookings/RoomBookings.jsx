@@ -115,7 +115,7 @@ function RoomBookings() {
         }else{
          setLoading(true);
          try {
-             await axios.patch(`https://sporti-backend-live-2.onrender.com/api/sporti/service/${formData._id}/confirm`);
+             await axios.patch(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/${formData._id}/confirm`);
              // fetchBookings(); // Refresh bookings after confirmation
              setLoading(false);
              toast.success('Accepted the request');

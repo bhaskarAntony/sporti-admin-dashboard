@@ -25,6 +25,8 @@ import BarbequeBookings from './pages/bookings/BarbequeBookings';
 import ConferenceBookings from './pages/bookings/ConferenceBookings';
 import MainHallBookings from './pages/bookings/MainHallBookings';
 import RoomDetails from './pages/view/RoomDetails';
+import AllRooms from './components/dashboards/AllRooms';
+import EditRoom from './components/dashboards/EditRoom';
 
 
 
@@ -61,6 +63,8 @@ function App() {
       <Route path='/main/hall/bookings' element={<MainHallBookings/>}/>
       <Route path='/conference/hall/bookings' element={<ConferenceBookings/>}/>
       <Route path='/barbeque/area/bookings' element={<BarbequeBookings/>}/>
+      <Route path='/all/rooms' element={<AllRooms/>}/>
+      <Route path='/edit/rooms/:applicationNo' element={<EditRoom/>}/>
       </Routes>
    </div>
     </div>
