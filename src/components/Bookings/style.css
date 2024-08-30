@@ -7,7 +7,7 @@
 }
 
 .main-function-hall-booking .form-group label {
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #333;
 }
 
@@ -46,9 +46,9 @@
 .main-function-hall-booking .dropdown-toggle {
     width: 100%;
     text-align: left;
-    background-color: #fff;
-    color: #333;
+    
 }
+
 
 .main-function-hall-booking .dropdown-menu {
     width: 100%;

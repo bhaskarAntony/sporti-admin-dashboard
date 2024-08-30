@@ -44,10 +44,14 @@
   border-radius: 5px;
 }
 .dropdown-menu{
-  background: linear-gradient(45deg, #282972, #522872) !important;
+  background: #fff !important;
 }
 .dropdown-menu .dropdown-item{
   padding: 15px !important;
+  color: #fff !important;
+}
+.dropdown-menu .dropdown-item a{
+  color: #ccc !important;
 }
 .dropdown-menu .dropdown-item:hover{
   background: #fff !important;
@@ -65,42 +69,16 @@
     border-radius: 5px;
     font-size: 1rem;
 }
-.app-left{
-    height: 100vh;
-    overflow: auto;
-    background: linear-gradient(45deg, #282972, #522872) !important;
-    padding: 20px 5px;
-}
+
 th, .navbar{
      background: linear-gradient(45deg, #282972, #522872) !important;
-     color: #fff !important;
+     /* color: #fff !important; */
 }
 /* .navbar a{
     color: #fff !important;
 } */
 
-.sidenav{
-    list-style-type: none;
-    height: 100vh;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-.sidenav .sidenav-item{
-    padding: 10px;
-    margin-bottom: 15px;
-    background-color: #f7e2ff26;
-    width: 100%;
-    border-radius: 10px;
-    cursor: pointer;
-}
-.sidenav .sidenav-item:hover{
-    background-color: rgb(255, 255, 255);
-   
-}
-.sidenav .sidenav-item:hover a{
-    color: #522872 !important;
-}
+
 /* .sidenav .sidenav-item a{
     text-decoration: none;
     color: #fff;
@@ -204,3 +182,18 @@ th, .navbar{
   table td {
     border-bottom: 1px solid #ddd; /* Border below each row */
   }
+
+  .dropdown-menu{
+    background: #fff !important;
+  }
+  /* .dropdown-menu .dropdown-item{
+    padding: 15px !important;
+    color: #fff !important;
+  }
+  .dropdown-menu .dropdown-item a{
+    color: #ccc !important;
+  }
+  .dropdown-menu .dropdown-item:hover{
+    background: #fff !important;
+    color: #282972 !important;
+  } */
