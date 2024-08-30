@@ -185,7 +185,11 @@ th, .navbar{
 
   .dropdown-menu{
     background: #fff !important;
+    color: #282972 !important;
   }
+ .dropdown-menu .dropdown-item{
+  color: #000 !important;
+ } 
   /* .dropdown-menu .dropdown-item{
     padding: 15px !important;
     color: #fff !important;
