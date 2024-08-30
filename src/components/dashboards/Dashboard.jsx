@@ -14,6 +14,8 @@ import TooltipTo from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
 import { BookingContext } from '../hooks/BookingContext';
 import AllRooms from './AllRooms';
+import BlockRoom from './BlockRoom';
+import ClearRoom from './ClearRoom';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -54,6 +56,12 @@ const Dashboard = () => {
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [rejectionReason, setRejectionReason] = useState('');
     const navigate = useNavigate();
+    const [selectedSporti, setSelectedSporti] = useState('SPORTI-2');
+        const [selectedRoom, setSelectedRoom] = useState(null);
+        const [selectedRoomType, setSelectedRoomType] = useState(null);
+        const [roomData, setRoomData] = useState({});
+        const [formData, setFormData] = useState({});
+
 
     
     useEffect(()=>{
@@ -61,6 +69,47 @@ const Dashboard = () => {
         processChartData(Contextbookings);
     }, [Contextbookings])
 
+    
+  useEffect(() => {
+    const fetchRoomData = async () => {
+      if (!formData.roomType || !selectedSporti) return;
+
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `https://sporti-backend-live-p00l.onrender.com/api/available/rooms?roomType=${selectedRoomType}&sporti=${selectedSporti}`
+        );
+        const rooms = response.data;
+
+        const structuredData = rooms.reduce((acc, room) => {
+          const { _id, floor, category, roomNumber, isBooked } = room;
+          if (!acc[floor]) acc[floor] = {};
+          if (!acc[floor][category]) acc[floor][category] = [];
+
+          acc[floor][category].push({
+            id: _id,
+            roomNumber,
+            isBooked,
+          });
+
+          return acc;
+        }, {});
+
+        setRoomData(structuredData);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        toast.error('Failed to fetch room data.');
+        console.error('Error:', error);
+      }
+    };
+
+    fetchRoomData();
+  }, [selectedRoomType, selectedSporti]);
+
+  const handleRoomSelect = (room) => {
+    setSelectedRoom(room);
+  };
    
 
 //    const fetchBookings = () =>{
@@ -110,6 +159,9 @@ const Dashboard = () => {
 
             if (item.status === 'confirmed') {
                 successfulPaymentsData[month] = (successfulPaymentsData[month] || 0) + 1;
+               
+            }
+            if(item.paymentStatus === "success"){
                 totalRevenueData += parseFloat(item.totalCost) || 0;
                 monthlyRevenueData[month] = (monthlyRevenueData[month] || 0) + parseFloat(item.totalCost);
             }
@@ -240,6 +292,7 @@ const yAxisLabel = 'Sales in Units';
     );
 
     const deleteHandler = (applicationNO) =>{
+      if(window.confirm('Delete Booking?')){
         setLoading(true)
         axios.delete(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/delete/booking/${applicationNO}`)
         .then((res)=>{
@@ -251,6 +304,9 @@ const yAxisLabel = 'Sales in Units';
             setLoading(false)
             toast.error(err.message)
         })
+      }else{
+        toast.info('cancelled')
+      }
     }
     if(loading || isloading){
         return <Loading/>
@@ -281,6 +337,53 @@ const yAxisLabel = 'Sales in Units';
         }
        }
     };
+
+    const handleSuccessPayment = async (formData) => {
+        if(formData.serviceName == "Room Booking"){
+           if(window.confirm('DO you want to make payment is success')){
+            setLoading(true);
+            try {//https://sporti-backend-live-p00l.onrender.com
+                await axios.patch(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/${formData._id}/success/payment`);
+                // fetchBookings(); // Refresh bookings after confirmation
+                setLoading(false);
+                toast.success('Payemnt is success');
+                // window.location.reload();
+                fetchBookings();
+            } catch (error) {
+    
+    
+                setLoading(false);
+                toast.success('Accepted the request');
+                console.error('Error:', error);
+            }
+           }else{
+            toast.warning('cancelled')
+           }
+        }
+     };
+
+     const handleRemovePayment = async (formData) => {
+        if (formData.serviceName === "Room Booking") { // Use strict equality
+          const userConfirmed = window.confirm('Do you want to remove payment?');
+      
+          if (userConfirmed) {
+            setLoading(true);
+            try {
+              await axios.patch(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/${formData._id}/remove/payment`);
+              toast.success('Payment has been removed successfully');
+              fetchBookings(); // Refresh bookings after confirmation
+            } catch (error) {
+              toast.error('Failed to remove payment, please try again later');
+              console.error('Error:', error);
+            } finally {
+              setLoading(false); // Ensure loading is disabled even if there's an error
+            }
+          } else {
+            toast.warning('Operation cancelled');
+          }
+        }
+      };
+      
 
     const handleRejectBooking = async () => {
         setLoading(true);
@@ -342,7 +445,7 @@ const yAxisLabel = 'Sales in Units';
                        <div>
                        <h4 className="fs-5">Monthly Revenue</h4>
                         <h3 className="fs-4">&#8377; {totalRevenue}/-</h3>
-                        <p className="fs-6 text-secondary">August 07 2024</p>
+                        <p className="fs-6 text-secondary">August 08 2024</p>
                        </div>
                     </div>
                 </div>
@@ -354,7 +457,7 @@ const yAxisLabel = 'Sales in Units';
                        <div>
                        <h4 className="fs-5">Total unique users</h4>
                         <h3 className="fs-4">{data.length}</h3>
-                        <p className="fs-6 text-secondary">August 07 2024</p>
+                        <p className="fs-6 text-secondary">August 08 2024</p>
                        </div>
                     </div>
                 </div>
@@ -366,7 +469,7 @@ const yAxisLabel = 'Sales in Units';
                        <div>
                        <h4 className="fs-5">Confirmed Bookings</h4>
                         <h3 className="fs-4">{data.filter((item)=>item.status =="confirmed").length}</h3>
-                        <p className="fs-6 text-secondary">August 07 2024</p>
+                        <p className="fs-6 text-secondary">August 08 2024</p>
                        </div>
                     </div>
                 </div>
@@ -378,7 +481,7 @@ const yAxisLabel = 'Sales in Units';
                        <div>
                        <h4 className="fs-5">Pending Users</h4>
                         <h3 className="fs-4">{data.filter((item)=>item.status=='pending').length}</h3>
-                        <p className="fs-6 text-secondary">August 07 2024</p>
+                        <p className="fs-6 text-secondary">August 08 2024</p>
                        </div>
                     </div>
                 </div>
@@ -625,7 +728,7 @@ const yAxisLabel = 'Sales in Units';
                 </Col> */}
             </Row>
             <hr />
-           <Accordion>
+           {/* <Accordion>
             <Accordion.Item eventKey='1'>
                 <Accordion.Header>
                    View SPORTI-1 Rooms Details
@@ -646,7 +749,7 @@ const yAxisLabel = 'Sales in Units';
             <AllRooms roomType="Family" sporti='SPORTI-1'/>
                 </Accordion.Body>
             </Accordion.Item>
-           </Accordion>
+           </Accordion> */}
             <Row className="my-4">
                 {/* <Col>
                     <Select
@@ -668,6 +771,7 @@ const yAxisLabel = 'Sales in Units';
                     </CSVLink>
                 </Col>
             </Row>
+
           
             <div className="row">
                 <div className="col-md-12">
@@ -810,7 +914,12 @@ const yAxisLabel = 'Sales in Units';
                                         {/* <TooltipTo title="send reject booking">    <button className="btn btn-success btn-sm"  onClick={() => handleShowModal(item)}>&#8377;<i class="bi bi-check"></i></button></TooltipTo> */}
                                         <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
 
-                                        <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>editRoom(item)}><i class="bi bi-pencil"></i>Edit</button></TooltipTo>
+                                        <TooltipTo title="Edit confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>editRoom(item)}><i class="bi bi-pencil"></i></button></TooltipTo>
+                                      {
+                                        (item.paymentStatus).toLowerCase() === 'pending'?(
+                                            <TooltipTo title="Success Payment"> <button className="btn btn-success btn-sm" onClick={()=>handleSuccessPayment(item)}><i class="bi bi-check"></i></button></TooltipTo>
+                                        ):(null)
+                                      }
                                        
                                         </div>
                                         </td>
@@ -881,6 +990,78 @@ const yAxisLabel = 'Sales in Units';
                         )
                      }
                     </div>
+                </div>
+                <div className="col-md-12 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className="fs-5">Successfull Payments</h1>
+                        <h1 className="fs-6"> {data.filter((item)=>item.paymentStatus=="success").length} Successfull Payments</h1>
+                        <p className="fs-6 text-secondary">Here you can find all Successfull Payments</p>
+                        <hr />
+                     {
+                        data.filter((item)=>item.paymentStatus == "success").length !=0?(
+                           <div className="table-container">
+                             <table>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Name</th>
+                                {/* <th>Cadre</th> */}
+                                <th>Service</th>
+                                <th>Action</th>
+                            </tr>
+                              {
+                                data.map((item, index)=>(
+                                    item.paymentStatus == "success"?(
+                                        <tr>
+                                        {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                        <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                        <td>{item.username}</td>
+                                        {/* <td>{item.officerCadre}</td> */}
+                                        <td>{item.serviceName}</td>
+                                        <td className=''>
+                                       <div className="d-flex gap-2 flex-nowrap">
+                                     
+                                      
+                                     
+                                       <TooltipTo title="reject booking">
+                                   <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                   </TooltipTo>
+                                      <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
+                                      <TooltipTo title="delete rejected booking"> <button className="btn btn-danger btn-sm" onClick={()=>handleRemovePayment(item)}><i class="bi bi-trash"></i>Remove Payment</button></TooltipTo>
+                                      {/* <TooltipTo title="Send SMS">
+                                   <button className="btn btn-dark btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-send"></i></button>
+                                   </TooltipTo> */}
+                                       </div>
+                                        </td>
+                                    </tr>
+                                    ):(null)
+                                ))
+                            }
+                          </table>
+                           </div>
+                        )
+                        :(
+                           <div className="col-md-3 m-auto">
+                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           </div>
+                        )
+                     }
+                    </div>
+                </div>
+                <div className="col-md-12 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className='fs-5
+                        
+                        '>Mannually Block the Rooms</h1>
+                     <BlockRoom/>
+                  </div>
+                </div>
+                <div className="col-md-12 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+                        <h1 className='fs-5
+                        
+                        '>Mannually Clear the Rooms</h1>
+                     <ClearRoom/>
+                  </div>
                 </div>
             </div>
 

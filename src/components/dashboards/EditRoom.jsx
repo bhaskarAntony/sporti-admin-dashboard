@@ -49,7 +49,7 @@ function EditRoom() {
     useEffect(()=>{
        const fetchData = async() =>{
         try {
-            const res = await axios.get(`http://localhost:4000/api/sporti/service/booking/${applicationNo}`)
+            const res = await axios.get(`https://sporti-backend-live-p00l.onrender.com/api/sporti/service/booking/${applicationNo}`)
             console.log(res);
             setFormData({...formData, ...res.data.booking})
             

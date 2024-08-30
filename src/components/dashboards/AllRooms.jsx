@@ -41,7 +41,7 @@ function AllRooms({ roomType, sporti }) {
 
   const clearRoom = async (id) => {
     try {
-      const res = await axios.post(`http://localhost:4000/api/clear/room/${id}`);
+      const res = await axios.post(`https://sporti-backend-live-p00l.onrender.com/api/clear/room/${id}`);
       toast.success('Room cleared successfully');
       console.log(id);
       

@@ -47,7 +47,7 @@ function App() {
      <Route path="/login" element={<Login />} />
      <Route path='/members' element={<Members/>}/>
      <Route element={<PrivateRoute/>}>
-      
+     <Route path='/' element={<Dashboard/>}/>
      </Route>
      <Route path='/' element={<Dashboard/>}/>
       <Route path='/bookings' element={<ConferenceHall/>}/>
