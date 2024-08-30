@@ -949,7 +949,7 @@ const yAxisLabel = 'Sales in Units';
 
                                         <TooltipTo title="Edit confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>editRoom(item)}><i class="bi bi-pencil"></i></button></TooltipTo>
                                       {
-                                        (item.paymentStatus).toLowerCase() === 'pending'?(
+                                        item.paymentStatus === 'pending' ||item.paymentStatus === "Pending"?(
                                             <TooltipTo title="Success Payment"> <button className="btn btn-success btn-sm" onClick={()=>handleSuccessPayment(item)}><i class="bi bi-check"></i></button></TooltipTo>
                                         ):(null)
                                       }
@@ -1030,7 +1030,7 @@ const yAxisLabel = 'Sales in Units';
 
                                        
                                       {
-                                        (item.paymentStatus).toLowerCase() === 'pending'?(
+                                        item?.paymentStatus=== 'pending' || item.paymentStatus === "Pending"?(
                                             <TooltipTo title="Success Payment"> <button className="btn btn-success btn-sm" onClick={()=>handleSuccessPayment(item)}><i class="bi bi-check"></i></button></TooltipTo>
                                         ):(null)
                                       }

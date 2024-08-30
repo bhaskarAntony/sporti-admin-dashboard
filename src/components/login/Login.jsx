@@ -46,7 +46,7 @@ const Login = () => {
             // toast.success('Login successful', { autoClose: 3000 })
             // // localStorage.setItem('token', res.data.token);
             login(username, password);
-            toast.success('Login is Success')
+            toast.success('Login is Success');
             navigate('/');
         } catch (error) {
             setLoading(false);

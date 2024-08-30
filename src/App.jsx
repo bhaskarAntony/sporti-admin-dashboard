@@ -46,10 +46,12 @@ function App() {
    <Routes>
      <Route path="/login" element={<Login />} />
      <Route path='/members' element={<Members/>}/>
+
      <Route element={<PrivateRoute/>}>
      <Route path='/' element={<Dashboard/>}/>
      </Route>
-     <Route path='/' element={<Dashboard/>}/>
+     
+     {/* <Route path='/' element={<Dashboard/>}/> */}
       <Route path='/bookings' element={<ConferenceHall/>}/>
       <Route path='/new/service' element={<MainFunctionHallBooking/>}/>
       <Route path='/confirm/service' element={<ConfirmService/>}/>
