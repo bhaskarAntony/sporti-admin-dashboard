@@ -65,6 +65,7 @@ function App() {
       <Route path='/barbeque/area/bookings' element={<BarbequeBookings/>}/>
       <Route path='/all/rooms' element={<AllRooms/>}/>
       <Route path='/edit/rooms/:applicationNo' element={<EditRoom/>}/>
+      <Route path='/feedbacks' element={<Feedback/>}/>
       </Routes>
    </div>
     </div>

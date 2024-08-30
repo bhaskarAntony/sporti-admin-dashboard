@@ -46,6 +46,7 @@ const Login = () => {
             // toast.success('Login successful', { autoClose: 3000 })
             // // localStorage.setItem('token', res.data.token);
             login(username, password);
+            toast.success('Login is Success')
             navigate('/');
         } catch (error) {
             setLoading(false);
@@ -59,12 +60,12 @@ const Login = () => {
         return <Loading/>
     }
     return (
-        <Container fluid className="vh-100">
-            <Row>
+        <Container fluid className="vh-100 p-3 ">
+            <Row className='vh-100 bg-light d-flex align-items-center'>
                 <Col md={6} lg={4} className="mx-auto">
-                    <Card className="shadow-sm">
+                    <Card className="shadow-sm border-0">
                         <Card.Body>
-                            <Card.Title className="text-center mb-4">Login</Card.Title>
+                            <Card.Title className=" mb-4 fs-5">Login to SPORTI Admin</Card.Title>
                             {error && <Alert variant="danger">{error}</Alert>}
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group className="mb-3" controlId="formBasicUsername">
@@ -92,9 +93,9 @@ const Login = () => {
                                     />
                                 </Form.Group>
 
-                                <Button variant="primary" type="submit" className="w-100">
+                                <button  type="submit" className="w-100 main-btn">
                                     Login
-                                </Button>
+                                </button>
                             </Form>
                         </Card.Body>
                     </Card>

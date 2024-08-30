@@ -437,8 +437,8 @@ const yAxisLabel = 'Sales in Units';
     return (
         <Container fluid className='dashboard p-3 p-md-5'>
               <div className="row">
-                <div className="col-md-3">
-                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                <div className="col-md-3 mb-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4 h-100">
                         <div className="icon">
                         <i>&#8377;</i>
                         </div>
@@ -449,8 +449,8 @@ const yAxisLabel = 'Sales in Units';
                        </div>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                <div className="col-md-3 mb-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4 h-100">
                         <div className="icon">
                         <i class="bi bi-people"></i>
                         </div>
@@ -461,8 +461,8 @@ const yAxisLabel = 'Sales in Units';
                        </div>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                <div className="col-md-3 mb-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4 h-100">
                         <div className="icon">
                         <i class="bi bi-ui-checks-grid"></i>
                         </div>
@@ -473,8 +473,8 @@ const yAxisLabel = 'Sales in Units';
                        </div>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4">
+                <div className="col-md-3 mb-3">
+                    <div className="card p-2 border-0 d-flex gap-2 flex-row align-items-center mb-4 h-100">
                         <div className="icon">
                         <i class="bi bi-people"></i>
                         </div>
@@ -760,24 +760,28 @@ const yAxisLabel = 'Sales in Units';
                         className='border-1'
                     />
                 </Col> */}
-                <Col className="text-end">
-                    <CSVLink
-                        data={filteredData}
-                        headers={headers}
-                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'all'}.csv`}
-                        className="main-btn"
-                    >
-                        <i class="bi bi-download"></i> Download Data
-                    </CSVLink>
-                </Col>
+               
             </Row>
 
           
             <div className="row">
                 <div className="col-md-12">
                     <div className="all-bookings p-3 p-md-5">
+                        <div className="d-flex justify-content-between align-items-center">
+                        <div>
                         <h1 className="fs-5">Recent Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all user with bookings</p>
+
+                        </div>
+                        <CSVLink
+                        data={filteredData}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'all'}.csv`}
+                            className="main-btn"
+                        >
+                            <i class="bi bi-download"></i> Download Data
+                        </CSVLink>
+                        </div>
                         {
                             data.length!=0?(
                                 <div className="table-container">
@@ -803,7 +807,7 @@ const yAxisLabel = 'Sales in Units';
                                               <div className="d-flex gap-3 flex-wrap h-100">
                                               {/* <i class="bi bi-pencil-fill fs-4 text-success"></i> */}
                                              <TooltipTo title="view booking">
-                                             <button className="btn btn-dark btn sm" onClick={()=>gotoViewDetails(item)}>
+                                             <button className="btn btn-dark btn-sm" onClick={()=>gotoViewDetails(item)}>
                                               <i class="bi bi-eye-fill" ></i>
                                               </button>
                                              </TooltipTo>
@@ -825,9 +829,24 @@ const yAxisLabel = 'Sales in Units';
                 </div>
                 <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div>
                         <h1 className="fs-5">Pending Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="pending").length} pending Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all Pending bookings</p>
+                        </div>
+                        <CSVLink
+                        data={data.filter((item)=>item.status=="pending")}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'pendingbookings'}.csv`}
+                            className="main-btn"
+                        >
+                            <i class="bi bi-download"></i> Download Data
+                        </CSVLink>
+                        </div>
+
+                        
+                      
                      
                  {
                     data.filter((item) => item.status == "pending").length !=0?(
@@ -879,9 +898,23 @@ const yAxisLabel = 'Sales in Units';
                 </div>
                 <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div>
                         <h1 className="fs-5">Confirmed Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="confirmed").length} confirmed Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all Confirmed bookings</p>
+                        </div>
+                        <CSVLink
+                        data={data.filter((item)=>item.status=="confirmed")}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'confirmedbookings'}.csv`}
+                            className="main-btn"
+                        >
+                            <i class="bi bi-download"></i> Download Data
+                        </CSVLink>
+                        </div>
+                        
+                      
                         <hr />
                      {
                         data.filter((item)=>item.status == "confirmed").length !=0?(
@@ -938,11 +971,106 @@ const yAxisLabel = 'Sales in Units';
                      }
                     </div>
                 </div>
+
                 <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
+
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                        <h1 className="fs-5">Booked Rooms Details</h1>
+                        <h1 className="fs-6">   {data.filter((item)=>item.status=="confirmed").length} Room Bookings</h1>
+                        <p className="fs-6 text-secondary">Here you can find all Booked Room Details</p>
+                        </div>
+                        <CSVLink
+                        data={data.filter((item)=>item.status=="confirmed")}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'bookedRooms'}.csv`}
+                            className="main-btn"
+                        >
+                            <i class="bi bi-download"></i> Download Data
+                        </CSVLink>
+                        </div>
+                       
+                        <hr />
+                     {
+                        data.filter((item)=>item.status == "confirmed").length !=0?(
+                          <div className="table-container">
+                              <table>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Officer's Name</th>
+                                {/* <th>Service Name</th> */}
+                                <th>Room Number</th>
+                                <th>Room Type</th>
+                                <th>Action</th>
+                            </tr>
+                              {
+                                data.map((item, index)=>(
+                                    item.status == "confirmed" && item.selectedRoomNumber != ""?(
+                                        <tr>
+                                        {/* <td><Avatar sx={{ bgcolor: "green" }}>{(item.username)}</Avatar></td> */}
+                                        <td><img src="https://www.uniquemedical.com.au/wp-content/uploads/2024/03/Default_pfp.svg.png" alt="" /></td>
+                                        <td>{item.username}</td>
+                                        {/* <td>{item.officerCadre}</td> */}
+                                        {/* <td>{item.serviceName}</td> */}
+                                        <td>{item.selectedRoomNumber}</td>
+                                        <td>{item.roomType}</td>
+                                        <td className=''>
+                                        <div className="d-flex gap-2 flex-nowrap h-100">
+                                        <TooltipTo title="Send SMS">
+                                        <button className="btn btn-dark btn-sm" onClick={()=>gotoViewDetails(item)}>
+                                              <i class="bi bi-eye-fill" ></i>
+                                              </button>
+                                             </TooltipTo>
+                                        <TooltipTo title="reject booking">
+                                   <button className="btn btn-danger btn-sm"  onClick={() => handleShowModal(item)}><i class="bi bi-x-lg"></i></button>
+                                   </TooltipTo>
+                                        {/* <TooltipTo title="send reject booking">    <button className="btn btn-success btn-sm"  onClick={() => handleShowModal(item)}>&#8377;<i class="bi bi-check"></i></button></TooltipTo> */}
+                                        <TooltipTo title="delete confirmed booking"> <button className="btn btn-danger btn-sm" onClick={()=>deleteHandler(item.applicationNo)}><i class="bi bi-trash"></i></button></TooltipTo>
+
+                                       
+                                      {
+                                        (item.paymentStatus).toLowerCase() === 'pending'?(
+                                            <TooltipTo title="Success Payment"> <button className="btn btn-success btn-sm" onClick={()=>handleSuccessPayment(item)}><i class="bi bi-check"></i></button></TooltipTo>
+                                        ):(null)
+                                      }
+                                       
+                                        </div>
+                                        </td>
+                                    </tr>
+                                    ):(null)
+                                ))
+                            }
+                          </table>
+                          </div>
+                        )
+                        :(
+                           <div className="col-md-3 m-auto">
+                             <img src="https://img.freepik.com/premium-vector/access-documents-that-are-cloud-storage-is-closed-data-protection-flat-vector-illustration_124715-1657.jpg?w=740" className='w-100' alt="" />
+                           </div>
+                        )
+                     }
+                    </div>
+                </div>
+                <div className="col-md-12 mt-4">
+                    <div className="all-bookings p-3 p-md-5">
+
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div>
                         <h1 className="fs-5">Rejected Bookings</h1>
                         <h1 className="fs-6">   {data.filter((item)=>item.status=="rejected").length} Rejected Bookings</h1>
                         <p className="fs-6 text-secondary">Here you can find all Rejected bookings</p>
+                        </div>
+                        <CSVLink
+                        data={data.filter((item)=>item.status=="rejected")}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'rejectedbookings'}.csv`}
+                            className="main-btn"
+                        >
+                            <i class="bi bi-download"></i> Download Data
+                        </CSVLink>
+                        </div>
+                       
                         <hr />
                      {
                         data.filter((item)=>item.status == "rejected").length !=0?(
@@ -993,9 +1121,22 @@ const yAxisLabel = 'Sales in Units';
                 </div>
                 <div className="col-md-12 mt-4">
                     <div className="all-bookings p-3 p-md-5">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div>
                         <h1 className="fs-5">Successfull Payments</h1>
                         <h1 className="fs-6"> {data.filter((item)=>item.paymentStatus=="success").length} Successfull Payments</h1>
                         <p className="fs-6 text-secondary">Here you can find all Successfull Payments</p>
+                        </div>
+                        <CSVLink
+                        data={data.filter((item)=>item.paymentStatus=="success")}
+                        headers={headers}
+                        filename={`booking_data_${selectedMonth ? selectedMonth.label : 'successfullPayments'}.csv`}
+                            className="main-btn"
+                        >
+                            <i class="bi bi-download"></i> Download Data
+                        </CSVLink>
+                        </div>
+                       
                         <hr />
                      {
                         data.filter((item)=>item.paymentStatus == "success").length !=0?(

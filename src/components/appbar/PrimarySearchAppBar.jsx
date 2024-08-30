@@ -13,6 +13,7 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto align-items-center gap-2">
             <Nav.Link href="/" className='text-light'>Home</Nav.Link>
+            <Nav.Link href="/" className='text-light'>Feedbacks</Nav.Link>
             {/* <Nav.Link href="/bookings">Bookings</Nav.Link> */}
            <NavDropdown title="Bookings" id="basic-nav-dropdown" className='btn btn-light btn-sm p-1 py-0'>
               <NavDropdown.Item href="/room/bookings" className='text-light' >Room Bookings</NavDropdown.Item>
@@ -27,6 +28,7 @@ function Header() {
             </NavDropdown>
             <a href="/new/room/booking" className='btn btn-light btn-sm p-2 text-dark'>New Room Booking</a>
             <a href="/new/service" className='btn btn-light btn-sm p-2'>New Event Booking</a>
+            
           </Nav>
         </Navbar.Collapse>
       </Container>
