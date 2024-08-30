@@ -13,7 +13,7 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto align-items-center gap-2">
             <Nav.Link href="/" className='text-light'>Home</Nav.Link>
-            <Nav.Link href="/" className='text-light'>Feedbacks</Nav.Link>
+            <Nav.Link href="/feedbacks" className='text-light'>Feedbacks</Nav.Link>
             {/* <Nav.Link href="/bookings">Bookings</Nav.Link> */}
            <NavDropdown title="Bookings" id="basic-nav-dropdown" className='btn btn-light btn-sm p-1 py-0'>
               <NavDropdown.Item href="/room/bookings" className='text-light' >Room Bookings</NavDropdown.Item>
