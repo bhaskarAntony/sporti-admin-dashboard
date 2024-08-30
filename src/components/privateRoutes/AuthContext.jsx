@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import Loading from '../popup/Loading';
 
 const AuthContext = createContext();
 
@@ -47,15 +49,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (username, password) => {
+    setLoading(true);
     console.log(process.env.REACT_APP_BACKEND_URL);
     try {
       const response = await axios.post(`https://sporti-backend-live-p00l.onrender.com/api/admin/login`, { username, password }, { withCredentials: true });
       if (response.status === 200) {
         setIsAuthenticated(true);
         setUser(response.data.user);
+        toast.success('Login is successfull')
         navigate('/');
+        setLoading(false)
+
       }
     } catch (error) {
+      setLoading(false)
+      toast.error('Login is failed, please try again later')
       console.error('Login error:', error);
     }
   };
@@ -66,9 +74,12 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     navigate('/login');
   };
+  if(loading){
+    return <Loading/>
+}
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, loading, login, logout, validateToken, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, user,login, logout, validateToken, setIsAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

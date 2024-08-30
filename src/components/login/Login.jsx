@@ -21,12 +21,12 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const {login} = useAuth()
 
     const handleSubmit = async (e) => {
-        setLoading(true)
+        // setLoading(true)
         e.preventDefault();
          // Client-side validation for max length and sanitization
             if (username.length > 30 || password.length > 30) {
@@ -46,19 +46,17 @@ const Login = () => {
             // toast.success('Login successful', { autoClose: 3000 })
             // // localStorage.setItem('token', res.data.token);
             login(username, password);
-            toast.success('Login is Success');
-            navigate('/');
+            // toast.success('Login is Success');
+            // navigate('/');
         } catch (error) {
-            setLoading(false);
+            // setLoading(false);
             toast.error('error', error)
             setError(error);
             console.error('Login error:', error);
         }
     };
 
-    if(loading){
-        return <Loading/>
-    }
+   
     return (
         <Container fluid className="vh-100 p-3 ">
             <Row className='vh-100 bg-light d-flex align-items-center'>
