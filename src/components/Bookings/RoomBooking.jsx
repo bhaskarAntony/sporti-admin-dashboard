@@ -334,7 +334,7 @@ function MainRoomBook() {
                             type="date"
                             id="checkIn"
                             name="checkIn"
-                            min={currentDateTime}
+                            // min={currentDateTime}
                             value={formData.checkIn}
                             onChange={handleFormChange}
                             className={`form-control ${errors.checkIn ? 'is-invalid' : ''}`}
@@ -347,7 +347,7 @@ function MainRoomBook() {
                             type="date"
                             id="checkOut"
                             name="checkOut"
-                            min={currentDateTime}
+                            // min={currentDateTime}
                             value={formData.checkOut}
                             onChange={handleFormChange}
                             className={`form-control ${errors.checkOut ? 'is-invalid' : ''}`}
