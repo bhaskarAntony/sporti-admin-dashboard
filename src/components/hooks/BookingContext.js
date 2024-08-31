@@ -16,7 +16,7 @@ const BookingProvider = ({ children }) => {
   const fetchBookings = async () => {
     try {
       const response = await axios.get('https://sporti-backend-live-p00l.onrender.com/api/sporti/service/bookings');
-      setBookings(response.data);
+      setBookings((response.data).reverse());
       setIsLoading(false);
     } catch (err) {
       setError(err);
